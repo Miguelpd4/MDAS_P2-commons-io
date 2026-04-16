@@ -144,21 +144,21 @@ public abstract class AbstractOriginSupplier<T, B extends AbstractOriginSupplier
     }
 
     /**
-     * Constructs a new RandomAccessFile origin for a RandomAccessFile.
+     * Constructs a new IORandomAccessFile origin for an IORandomAccessFile.
      *
-     * @param origin the reader.
-     * @return a new reader origin.
+     * @param origin the IORandomAccessFile.
+     * @return a new IORandomAccessFile origin.
      * @since 2.18.0
      */
     protected static IORandomAccessFileOrigin newRandomAccessFileOrigin(final IORandomAccessFile origin) {
-        return new IORandomAccessFileOrigin(origin);
+        return new IORandomAccessFileOrigin(origin)
     }
 
     /**
      * Constructs a new RandomAccessFile origin for a RandomAccessFile.
      *
-     * @param origin the reader.
-     * @return a new reader origin.
+     * @param origin the RandomAccessFile.
+     * @return a new RandomAccessFile origin.
      * @since 2.18.0
      */
     protected static RandomAccessFileOrigin newRandomAccessFileOrigin(final RandomAccessFile origin) {
@@ -186,10 +186,10 @@ public abstract class AbstractOriginSupplier<T, B extends AbstractOriginSupplier
     }
 
     /**
-     * Constructs a new writer origin for a file.
+     * Constructs a new writer origin for a writer.
      *
      * @param origin the writer.
-     * @return a new writer.
+     * @return a new writer origin.
      */
     protected static WriterOrigin newWriterOrigin(final Writer origin) {
         return new WriterOrigin(origin);

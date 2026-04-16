@@ -377,11 +377,11 @@ public abstract class AbstractOrigin<T, B extends AbstractOrigin<T, B>> extends 
 
         @Override
         public byte[] getByteArray() throws IOException {
-            final long longLen = origin.length();
-            if (longLen > Integer.MAX_VALUE) {
+            final long fileSizeInBytes = origin.length();
+            if (fileSizeInBytes > Integer.MAX_VALUE) {
                 throw new IllegalStateException("Origin too large.");
             }
-            return RandomAccessFiles.read(origin, 0, (int) longLen);
+            return RandomAccessFiles.read(origin, 0, (int) fileSizeInBytes);
         }
 
         @Override
@@ -1096,12 +1096,12 @@ public abstract class AbstractOrigin<T, B extends AbstractOrigin<T, B>> extends 
             if (options != null) {
                 Stream.of(options).forEach(option -> {
                     if (option instanceof URIOpenOption) {
-                        final URIOpenOption connOption = (URIOpenOption) option;
-                        if (connOption.connectTimeout != null) {
-                            connection.setConnectTimeout(toMillis(connOption.connectTimeout));
+                        final URIOpenOption uriOpenOption = (URIOpenOption) option;
+                        if (uriOpenOption.connectTimeout != null) {
+                            connection.setConnectTimeout(toMillis(uriOpenOption.connectTimeout));
                         }
-                        if (connOption.readTimeout != null) {
-                            connection.setReadTimeout(toMillis(connOption.readTimeout));
+                        if (uriOpenOption.readTimeout != null) {
+                            connection.setReadTimeout(toMillis(uriOpenOption.readTimeout));
                         }
                     }
                 });
@@ -1221,13 +1221,14 @@ public abstract class AbstractOrigin<T, B extends AbstractOrigin<T, B>> extends 
      * @since 2.13.0
      */
     public byte[] getByteArray(final long position, final int length) throws IOException {
-        final byte[] bytes = getByteArray();
+        final byte[] fullByteArray = getByteArray();
         // Checks for int overflow.
-        final int start = Math.toIntExact(position);
-        if (start < 0 || length < 0 || start + length < 0 || start + length > bytes.length) {
-            throw new IllegalArgumentException("Couldn't read array (start: " + start + ", length: " + length + ", data length: " + bytes.length + ").");
+        final int startIndex = Math.toIntExact(position);
+        final int endIndex = startIndex + length;
+        if (startIndex < 0 || length < 0 || endIndex < 0 || endIndex > fullByteArray.length) {
+            throw new IllegalArgumentException("Couldn't read array (start: " + startIndex + ", length: " + length + ", data length: " + fullByteArray.length + ").");
         }
-        return Arrays.copyOfRange(bytes, start, start + length);
+        return Arrays.copyOfRange(fullByteArray, startIndex, endIndex);
     }
 
     /**

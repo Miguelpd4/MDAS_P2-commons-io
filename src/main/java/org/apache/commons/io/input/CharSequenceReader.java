@@ -240,11 +240,11 @@ public class CharSequenceReader extends Reader implements Serializable {
 
         int count = 0;
         for (int i = 0; i < length; i++) {
-            final int c = read();
-            if (c == EOF) {
+            final int nextCharacter = read();
+            if (nextCharacter == EOF) {
                 return count;
             }
-            array[offset + i] = (char) c;
+            array[offset + i] = (char) nextCharacter;
             count++;
         }
         return count;

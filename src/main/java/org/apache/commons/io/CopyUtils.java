@@ -170,10 +170,10 @@ public class CopyUtils {
     public static int copy(final InputStream input, final OutputStream output) throws IOException {
         final byte[] buffer = IOUtils.byteArray();
         int count = 0;
-        int n;
-        while (EOF != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
-            count += n;
+        int bytesRead;
+        while (EOF != (bytesRead = input.read(buffer))) {
+            output.write(buffer, 0, bytesRead);
+            count += bytesRead;
         }
         return count;
     }
@@ -284,10 +284,10 @@ public class CopyUtils {
         try (ScratchChars scratch = IOUtils.ScratchChars.get()) {
             final char[] buffer = scratch.array();
             int count = 0;
-            int n;
-            while (EOF != (n = input.read(buffer))) {
-                output.write(buffer, 0, n);
-                count += n;
+            int charactersRead;
+            while (EOF != (charactersRead = input.read(buffer))) {
+                output.write(buffer, 0, charactersRead);
+                count += charactersRead;
             }
             return count;
         }

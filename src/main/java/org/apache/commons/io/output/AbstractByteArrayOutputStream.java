@@ -218,10 +218,10 @@ public abstract class AbstractByteArrayOutputStream<T extends AbstractByteArrayO
         final byte[] newBuf = IOUtils.byteArray(remaining);
         int pos = 0;
         for (final byte[] buf : buffers) {
-            final int c = Math.min(buf.length, remaining);
-            System.arraycopy(buf, 0, newBuf, pos, c);
-            pos += c;
-            remaining -= c;
+            final int bytesToCopy = Math.min(buf.length, remaining);
+            System.arraycopy(buf, 0, newBuf, pos, bytesToCopy);
+            pos += bytesToCopy;
+            remaining -= bytesToCopy;
             if (remaining == 0) {
                 break;
             }
@@ -264,9 +264,9 @@ public abstract class AbstractByteArrayOutputStream<T extends AbstractByteArrayO
         }
         final List<S> list = new ArrayList<>(buffers.size());
         for (final byte[] buf : buffers) {
-            final int c = Math.min(buf.length, remaining);
-            list.add(isConstructor.construct(buf, 0, c));
-            remaining -= c;
+            final int bytesToCopy = Math.min(buf.length, remaining);
+            list.add(isConstructor.construct(buf, 0, bytesToCopy));
+            remaining -= bytesToCopy;
             if (remaining == 0) {
                 break;
             }
@@ -393,16 +393,16 @@ public abstract class AbstractByteArrayOutputStream<T extends AbstractByteArrayO
     protected int writeImpl(final InputStream in) throws IOException {
         int readCount = 0;
         int inBufferPos = count - filledBufferSum;
-        int n = in.read(currentBuffer, inBufferPos, currentBuffer.length - inBufferPos);
-        while (n != EOF) {
-            readCount += n;
-            inBufferPos += n;
-            count += n;
+        int bytesRead = in.read(currentBuffer, inBufferPos, currentBuffer.length - inBufferPos);
+        while (bytesRead != EOF) {
+            readCount += bytesRead;
+            inBufferPos += bytesRead;
+            count += bytesRead;
             if (inBufferPos == currentBuffer.length) {
                 needNewBuffer(currentBuffer.length);
                 inBufferPos = 0;
             }
-            n = in.read(currentBuffer, inBufferPos, currentBuffer.length - inBufferPos);
+            bytesRead = in.read(currentBuffer, inBufferPos, currentBuffer.length - inBufferPos);
         }
         return readCount;
     }
@@ -441,9 +441,9 @@ public abstract class AbstractByteArrayOutputStream<T extends AbstractByteArrayO
     protected void writeToImpl(final OutputStream out) throws IOException {
         int remaining = count;
         for (final byte[] buf : buffers) {
-            final int c = Math.min(buf.length, remaining);
-            out.write(buf, 0, c);
-            remaining -= c;
+            final int bytesToCopy = Math.min(buf.length, remaining);
+            out.write(buf, 0, bytesToCopy);
+            remaining -= bytesToCopy;
             if (remaining == 0) {
                 break;
             }

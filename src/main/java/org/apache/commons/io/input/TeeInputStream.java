@@ -124,11 +124,11 @@ public class TeeInputStream extends ProxyInputStream {
      */
     @Override
     public int read(final byte[] bts) throws IOException {
-        final int n = super.read(bts);
-        if (n != EOF) {
-            branch.write(bts, 0, n);
+        final int bytesRead = super.read(bts);
+        if (bytesRead != EOF) {
+            branch.write(bts, 0, bytesRead);
         }
-        return n;
+        return bytesRead;
     }
 
     /**
@@ -143,11 +143,11 @@ public class TeeInputStream extends ProxyInputStream {
      */
     @Override
     public int read(final byte[] bts, final int st, final int end) throws IOException {
-        final int n = super.read(bts, st, end);
-        if (n != EOF) {
-            branch.write(bts, st, n);
+        final int bytesRead = super.read(bts, st, end);
+        if (bytesRead != EOF) {
+            branch.write(bts, st, bytesRead);
         }
-        return n;
+        return bytesRead;
     }
 
 }

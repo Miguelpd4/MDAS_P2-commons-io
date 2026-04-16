@@ -123,7 +123,7 @@ public class ByteArraySeekableByteChannel implements SeekableByteChannel {
         Objects.requireNonNull(bytes, "bytes");
         return new ByteArraySeekableByteChannel(bytes);
     }
-    private byte[] data;
+    private byte[] byteArrayBuffer;
     private volatile boolean closed;
     private long position;
     private int size;
@@ -143,17 +143,17 @@ public class ByteArraySeekableByteChannel implements SeekableByteChannel {
     }
 
     private ByteArraySeekableByteChannel(final Builder builder) throws IOException {
-        this.data = builder.getByteArray();
-        this.size = data.length;
+        this.byteArrayBuffer = builder.getByteArray();
+        this.size = byteArrayBuffer.length;
         final OpenOption[] openOptions = builder.getOpenOptions();
         Arrays.sort(openOptions);
         this.isWritable = openOptions.length == 0 || Arrays.binarySearch(openOptions, StandardOpenOption.WRITE) >= 0
                 || Arrays.binarySearch(openOptions, StandardOpenOption.APPEND) >= 0;
     }
 
-    private ByteArraySeekableByteChannel(final byte[] data) {
-        this.data = data;
-        this.size = data.length;
+    private ByteArraySeekableByteChannel(final byte[] byteArrayBuffer) {
+        this.byteArrayBuffer = byteArrayBuffer;
+        this.size = byteArrayBuffer.length;
         this.isWritable = true;
     }
 
@@ -170,7 +170,7 @@ public class ByteArraySeekableByteChannel implements SeekableByteChannel {
         if (size < 0) {
             throw new IllegalArgumentException("Size must be non-negative");
         }
-        this.data = new byte[size];
+        this.byteArrayBuffer = new byte[size];
         this.isWritable = true;
     }
 
@@ -183,7 +183,7 @@ public class ByteArraySeekableByteChannel implements SeekableByteChannel {
      * @return internal byte array.
      */
     public byte[] array() {
-        return data;
+        return byteArrayBuffer;
     }
 
     private void checkOpen() throws ClosedChannelException {
@@ -263,7 +263,7 @@ public class ByteArraySeekableByteChannel implements SeekableByteChannel {
             if (wanted > possible) {
                 wanted = possible;
             }
-            buf.put(data, (int) position, wanted);
+            buf.put(byteArrayBuffer, (int) position, wanted);
             position += wanted;
             return wanted;
         } finally {
@@ -272,7 +272,7 @@ public class ByteArraySeekableByteChannel implements SeekableByteChannel {
     }
 
     private void resize(final int newLength) {
-        int len = data.length;
+        int len = byteArrayBuffer.length;
         if (len == 0) {
             len = 1;
         }
@@ -283,7 +283,7 @@ public class ByteArraySeekableByteChannel implements SeekableByteChannel {
         } else { // avoid overflow
             len = newLength;
         }
-        data = Arrays.copyOf(data, len);
+        byteArrayBuffer = Arrays.copyOf(byteArrayBuffer, len);
     }
 
     @Override
@@ -306,7 +306,7 @@ public class ByteArraySeekableByteChannel implements SeekableByteChannel {
      * @return a new byte array containing the data stored in this channel.
      */
     public byte[] toByteArray() {
-        return Arrays.copyOf(data, size);
+        return Arrays.copyOf(byteArrayBuffer, size);
     }
 
     @Override

@@ -1199,10 +1199,10 @@ public class FileUtils {
     static String decodeUrl(final String url) {
         String decoded = url;
         if (url != null && url.indexOf('%') >= 0) {
-            final int n = url.length();
+            final int urlLength = url.length();
             final StringBuilder builder = new StringBuilder();
-            final ByteBuffer byteBuffer = ByteBuffer.allocate(n);
-            for (int i = 0; i < n; ) {
+            final ByteBuffer byteBuffer = ByteBuffer.allocate(urlLength);
+            for (int i = 0; i < urlLength; ) {
                 if (url.charAt(i) == '%') {
                     try {
                         do {

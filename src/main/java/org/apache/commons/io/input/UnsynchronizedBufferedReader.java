@@ -217,9 +217,9 @@ public class UnsynchronizedBufferedReader extends UnsynchronizedReader {
      */
     public int peek() throws IOException {
         mark(1);
-        final int c = read();
+        final int nextCharacter = read();
         reset();
-        return c;
+        return nextCharacter;
     }
 
     /**
@@ -231,11 +231,11 @@ public class UnsynchronizedBufferedReader extends UnsynchronizedReader {
      * @throws IOException If an I/O error occurs.
      */
     public int peek(final char[] buf) throws IOException {
-        final int n = buf.length;
-        mark(n);
-        final int c = read(buf, 0, n);
+        final int bufferLength = buf.length;
+        mark(bufferLength);
+        final int charactersRead = read(buf, 0, bufferLength);
         reset();
-        return c;
+        return charactersRead;
     }
 
     /**

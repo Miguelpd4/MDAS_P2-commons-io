@@ -97,15 +97,15 @@ public class SequenceReader extends Reader {
      */
     @Override
     public int read() throws IOException {
-        int c = EOF;
+        int nextCharacter = EOF;
         while (reader != null) {
-            c = reader.read();
-            if (c != EOF) {
+            nextCharacter = reader.read();
+            if (nextCharacter != EOF) {
                 break;
             }
             nextReader();
         }
-        return c;
+        return nextCharacter;
     }
 
     @Override

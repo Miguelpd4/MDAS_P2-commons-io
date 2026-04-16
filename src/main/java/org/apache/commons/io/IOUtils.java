@@ -1530,11 +1530,11 @@ public class IOUtils {
      */
     public static long copy(final Reader reader, final Appendable output, final CharBuffer buffer) throws IOException {
         long count = 0;
-        int n;
-        while (EOF != (n = reader.read(buffer))) {
+        int charactersRead;
+        while (EOF != (charactersRead = reader.read(buffer))) {
             buffer.flip();
-            output.append(buffer, 0, n);
-            count += n;
+            output.append(buffer, 0, charactersRead);
+            count += charactersRead;
         }
         return count;
     }
@@ -1730,10 +1730,10 @@ public class IOUtils {
         Objects.requireNonNull(inputStream, "inputStream");
         Objects.requireNonNull(outputStream, "outputStream");
         long count = 0;
-        int n;
-        while (EOF != (n = inputStream.read(buffer))) {
-            outputStream.write(buffer, 0, n);
-            count += n;
+        int bytesRead;
+        while (EOF != (bytesRead = inputStream.read(buffer))) {
+            outputStream.write(buffer, 0, bytesRead);
+            count += bytesRead;
         }
         return count;
     }
@@ -1848,10 +1848,10 @@ public class IOUtils {
      */
     public static long copyLarge(final Reader reader, final Writer writer, final char[] buffer) throws IOException {
         long count = 0;
-        int n;
-        while (EOF != (n = reader.read(buffer))) {
-            writer.write(buffer, 0, n);
-            count += n;
+        int charactersRead;
+        while (EOF != (charactersRead = reader.read(buffer))) {
+            writer.write(buffer, 0, charactersRead);
+            count += charactersRead;
         }
         return count;
     }
@@ -2613,11 +2613,11 @@ public class IOUtils {
         while (remain > 0) {
             skipByteBuffer.position(0);
             skipByteBuffer.limit((int) Math.min(remain, DEFAULT_BUFFER_SIZE));
-            final int n = input.read(skipByteBuffer);
-            if (n == EOF) {
+            final int bytesRead = input.read(skipByteBuffer);
+            if (bytesRead == EOF) {
                 break;
             }
-            remain -= n;
+            remain -= bytesRead;
         }
         return toSkip - remain;
     }
@@ -2649,11 +2649,11 @@ public class IOUtils {
             final char[] chars = scratch.array();
             while (remain > 0) {
                 // See https://issues.apache.org/jira/browse/IO-203 for why we use read() rather than delegating to skip()
-                final long n = reader.read(chars, 0, (int) Math.min(remain, chars.length));
-                if (n < 0) { // EOF
+                final long charactersRead = reader.read(chars, 0, (int) Math.min(remain, chars.length));
+                if (charactersRead < 0) { // EOF
                     break;
                 }
-                remain -= n;
+                remain -= charactersRead;
             }
         }
         return toSkip - remain;

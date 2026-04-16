@@ -158,9 +158,9 @@ public abstract class ProxyReader extends FilterReader {
     public int read() throws IOException {
         try {
             beforeRead(1);
-            final int c = in.read();
-            afterRead(c != EOF ? 1 : EOF);
-            return c;
+            final int characterCode = in.read();
+            afterRead(characterCode != EOF ? 1 : EOF);
+            return characterCode;
         } catch (final IOException e) {
             handleIOException(e);
             return EOF;
@@ -178,9 +178,9 @@ public abstract class ProxyReader extends FilterReader {
     public int read(final char[] chr) throws IOException {
         try {
             beforeRead(IOUtils.length(chr));
-            final int n = in.read(chr);
-            afterRead(n);
-            return n;
+            final int charactersRead = in.read(chr);
+            afterRead(charactersRead);
+            return charactersRead;
         } catch (final IOException e) {
             handleIOException(e);
             return EOF;
@@ -200,9 +200,9 @@ public abstract class ProxyReader extends FilterReader {
     public int read(final char[] chr, final int st, final int len) throws IOException {
         try {
             beforeRead(len);
-            final int n = in.read(chr, st, len);
-            afterRead(n);
-            return n;
+            final int charactersRead = in.read(chr, st, len);
+            afterRead(charactersRead);
+            return charactersRead;
         } catch (final IOException e) {
             handleIOException(e);
             return EOF;
@@ -221,9 +221,9 @@ public abstract class ProxyReader extends FilterReader {
     public int read(final CharBuffer target) throws IOException {
         try {
             beforeRead(IOUtils.length(target));
-            final int n = in.read(target);
-            afterRead(n);
-            return n;
+            final int charactersRead = in.read(target);
+            afterRead(charactersRead);
+            return charactersRead;
         } catch (final IOException e) {
             handleIOException(e);
             return EOF;

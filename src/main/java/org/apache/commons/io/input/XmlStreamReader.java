@@ -325,13 +325,13 @@ public class XmlStreamReader extends Reader {
             inputStream.mark(IOUtils.DEFAULT_BUFFER_SIZE);
             int offset = 0;
             int max = IOUtils.DEFAULT_BUFFER_SIZE;
-            int c = inputStream.read(bytes, offset, max);
+            int bytesRead = inputStream.read(bytes, offset, max);
             int firstGT = -1;
             String xmlProlog = ""; // avoid possible NPE warning (cannot happen; this just silences the warning)
-            while (c != -1 && firstGT == -1 && offset < IOUtils.DEFAULT_BUFFER_SIZE) {
-                offset += c;
-                max -= c;
-                c = inputStream.read(bytes, offset, max);
+            while (bytesRead != -1 && firstGT == -1 && offset < IOUtils.DEFAULT_BUFFER_SIZE) {
+                offset += bytesRead;
+                max -= bytesRead;
+                bytesRead = inputStream.read(bytes, offset, max);
                 xmlProlog = new String(bytes, 0, offset, guessedEnc);
                 firstGT = xmlProlog.indexOf('>');
             }

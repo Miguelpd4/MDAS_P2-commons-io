@@ -80,7 +80,7 @@ public abstract class AbstractStreamBuilder<T, B extends AbstractStreamBuilder<T
     /**
      * The default checking behavior for a buffer size request. Throws a {@link IllegalArgumentException} by default.
      */
-    private final IntUnaryOperator defaultSizeChecker = size -> size > bufferSizeMax ? throwIae(size, bufferSizeMax) : size;
+    private final IntUnaryOperator defaultSizeChecker = requestedBufferSize -> requestedBufferSize > bufferSizeMax ? throwBufferSizeExceedsMaximumException(requestedBufferSize, bufferSizeMax) : requestedBufferSize;
 
     /**
      * The checking behavior for a buffer size request.
@@ -97,11 +97,11 @@ public abstract class AbstractStreamBuilder<T, B extends AbstractStreamBuilder<T
     /**
      * Applies the buffer size request.
      *
-     * @param size the size request.
+     * @param requestedBufferSize the size request.
      * @return the size to use, usually the input, or can throw an unchecked exception, like {@link IllegalArgumentException}.
      */
-    private int checkBufferSize(final int size) {
-        return bufferSizeChecker.applyAsInt(size);
+    private int checkBufferSize(final int requestedBufferSize) {
+        return bufferSizeChecker.applyAsInt(requestedBufferSize);
     }
 
     /**
@@ -422,7 +422,7 @@ public abstract class AbstractStreamBuilder<T, B extends AbstractStreamBuilder<T
         return asThis();
     }
 
-    private int throwIae(final int size, final int max) {
-        throw new IllegalArgumentException(String.format("Request %,d exceeds maximum %,d", size, max));
+    private int throwBufferSizeExceedsMaximumException(final int requestedBufferSize, final int maximumBufferSize) {
+        throw new IllegalArgumentException(String.format("Request %,d exceeds maximum %,d", requestedBufferSize, maximumBufferSize));
     }
 }

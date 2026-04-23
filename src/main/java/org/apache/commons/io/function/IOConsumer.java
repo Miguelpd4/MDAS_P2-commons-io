@@ -39,7 +39,6 @@ public interface IOConsumer<T> {
      * Consider private.
      */
     IOConsumer<?> NOOP_IO_CONSUMER = t -> {
-        // noop
     };
 
     /**

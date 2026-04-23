@@ -35,7 +35,6 @@ public interface IOIntConsumer {
      * The constant no-op consumer.
      */
     IOIntConsumer NOOP = i -> {
-        // noop
     };
 
     /**

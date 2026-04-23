@@ -66,7 +66,6 @@ public class LastModifiedFileComparator extends AbstractFileComparator implement
      * Construct a new instance.
      */
     public LastModifiedFileComparator() {
-        // empty
     }
 
     /**

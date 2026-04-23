@@ -28,5 +28,5 @@ package org.apache.commons.io.file;
  * @since 2.8.0
  */
 public interface DeleteOption {
-    // empty
+    // empty enum
 }

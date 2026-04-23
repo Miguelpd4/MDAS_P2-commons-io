@@ -980,7 +980,7 @@ public abstract class AbstractOrigin<T, B extends AbstractOrigin<T, B>> extends 
                  * Constructs a new instance.
                  */
                 public Builder() {
-                    // empty
+                    // no action needed
                 }
 
                 @Override

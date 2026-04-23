@@ -30,7 +30,7 @@ public class FileAlterationListenerAdaptor implements FileAlterationListener {
      * Construct a new instance.
      */
     public FileAlterationListenerAdaptor() {
-        // empty
+
     }
 
     /**

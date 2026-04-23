@@ -53,7 +53,7 @@ public class ClosedReader extends Reader {
      * Construct a new instance.
      */
     public ClosedReader() {
-        // empty
+
     }
 
     @Override

@@ -67,7 +67,6 @@ public class DirectoryFileComparator extends AbstractFileComparator implements S
      * Construct a new instance.
      */
     public DirectoryFileComparator() {
-        // empty
     }
 
     /**

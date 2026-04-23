@@ -26,5 +26,5 @@ import java.nio.file.Path;
  * @since 2.9.0
  */
 public interface PathVisitor extends FileVisitor<Path> {
-    // empty
+    // PathVisitor interface
 }

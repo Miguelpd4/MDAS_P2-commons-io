@@ -63,7 +63,6 @@ public class DefaultFileComparator extends AbstractFileComparator implements Ser
      * Constructs a new instance.
      */
     public DefaultFileComparator() {
-        // empty
     }
 
     /**

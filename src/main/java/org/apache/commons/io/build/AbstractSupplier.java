@@ -129,7 +129,7 @@ public abstract class AbstractSupplier<T, B extends AbstractSupplier<T, B>> impl
      * Constructs a new instance for subclasses.
      */
     public AbstractSupplier() {
-        // empty
+
     }
 
     /**

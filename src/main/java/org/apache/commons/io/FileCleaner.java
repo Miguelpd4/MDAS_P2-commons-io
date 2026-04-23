@@ -161,6 +161,5 @@ public class FileCleaner {
      * Construct a new instance.
      */
     public FileCleaner() {
-        // empty
     }
 }

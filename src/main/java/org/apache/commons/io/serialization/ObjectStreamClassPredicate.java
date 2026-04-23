@@ -46,7 +46,7 @@ public class ObjectStreamClassPredicate implements Predicate<ObjectStreamClass> 
      * Constructs a new instance.
      */
     public ObjectStreamClassPredicate() {
-        // empty
+
     }
 
     /**

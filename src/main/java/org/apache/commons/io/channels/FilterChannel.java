@@ -82,7 +82,6 @@ public class FilterChannel<C extends Channel> implements Channel {
          * Builds instances of {@link FilterChannel}.
          */
         protected Builder() {
-            // empty
         }
 
         @Override

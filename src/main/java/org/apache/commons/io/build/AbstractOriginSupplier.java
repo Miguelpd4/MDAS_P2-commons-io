@@ -151,7 +151,7 @@ public abstract class AbstractOriginSupplier<T, B extends AbstractOriginSupplier
      * @since 2.18.0
      */
     protected static IORandomAccessFileOrigin newRandomAccessFileOrigin(final IORandomAccessFile origin) {
-        return new IORandomAccessFileOrigin(origin)
+        return new IORandomAccessFileOrigin(origin);
     }
 
     /**
@@ -204,7 +204,6 @@ public abstract class AbstractOriginSupplier<T, B extends AbstractOriginSupplier
      * Constructs a new instance for subclasses.
      */
     public AbstractOriginSupplier() {
-        // empty
     }
 
     /**

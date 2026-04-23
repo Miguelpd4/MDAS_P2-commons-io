@@ -91,7 +91,6 @@ public abstract class AbstractStreamBuilder<T, B extends AbstractStreamBuilder<T
      * Constructs a new instance for subclasses.
      */
     public AbstractStreamBuilder() {
-        // empty
     }
 
     /**

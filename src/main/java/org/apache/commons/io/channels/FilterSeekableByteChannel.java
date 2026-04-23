@@ -68,7 +68,6 @@ public class FilterSeekableByteChannel<C extends SeekableByteChannel> extends Fi
          * Constructs a new builder for {@link FilterSeekableByteChannel}.
          */
         public AbstractBuilder() {
-            // empty
         }
     }
 
@@ -81,7 +80,6 @@ public class FilterSeekableByteChannel<C extends SeekableByteChannel> extends Fi
          * Builds instances of {@link FilterSeekableByteChannel}.
          */
         protected Builder() {
-            // empty
         }
 
         @Override

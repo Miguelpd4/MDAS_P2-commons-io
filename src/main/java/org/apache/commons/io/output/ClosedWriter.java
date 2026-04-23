@@ -51,7 +51,7 @@ public class ClosedWriter extends Writer {
      * Construct a new instance.
      */
     public ClosedWriter() {
-        // empty
+
     }
 
     @Override

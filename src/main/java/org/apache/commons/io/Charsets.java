@@ -298,6 +298,5 @@ public class Charsets {
      */
     @Deprecated
     public Charsets() {
-        // empty
     }
 }

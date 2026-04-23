@@ -69,7 +69,6 @@ public class FilterWritableByteChannel<C extends WritableByteChannel> extends Fi
          * Constructs a new builder for {@link FilterWritableByteChannel}.
          */
         public AbstractBuilder() {
-            // empty
         }
     }
 
@@ -82,7 +81,7 @@ public class FilterWritableByteChannel<C extends WritableByteChannel> extends Fi
          * Builds instances of {@link FilterByteChannel}.
          */
         protected Builder() {
-            // empty
+
         }
 
         @Override

@@ -46,7 +46,6 @@ public class ProxyOutputStream extends FilterOutputStream {
          * Constructs a new builder of {@link ProxyOutputStream}.
          */
         public Builder() {
-            // empty
         }
 
         /**

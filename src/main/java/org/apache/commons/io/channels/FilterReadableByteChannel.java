@@ -69,7 +69,6 @@ public class FilterReadableByteChannel<C extends ReadableByteChannel> extends Fi
          * Constructs a new builder for {@link FilterReadableByteChannel}.
          */
         public AbstractBuilder() {
-            // empty
         }
     }
 
@@ -82,7 +81,6 @@ public class FilterReadableByteChannel<C extends ReadableByteChannel> extends Fi
          * Builds instances of {@link FilterByteChannel}.
          */
         protected Builder() {
-            // empty
         }
 
         @Override

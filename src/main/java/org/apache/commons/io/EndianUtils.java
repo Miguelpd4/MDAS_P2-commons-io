@@ -502,6 +502,5 @@ public class EndianUtils {
      */
     @Deprecated
     public EndianUtils() {
-        // empty
     }
 }

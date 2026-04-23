@@ -179,7 +179,6 @@ public class FileSystemUtils {
      */
     @Deprecated
     public FileSystemUtils() {
-        // empty
     }
 
 }

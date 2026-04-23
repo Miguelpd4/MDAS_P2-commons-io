@@ -73,7 +73,7 @@ public class FilterFileChannel extends FileChannel {
          * Builds instances of {@link FilterChannel}.
          */
         protected Builder() {
-            // empty
+
         }
 
         @Override

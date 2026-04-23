@@ -240,8 +240,6 @@ public class CopyUtils {
         // make explicit the dependency on the default encoding
         final OutputStreamWriter out = new OutputStreamWriter(output, Charset.defaultCharset());
         copy(input, out);
-        // XXX Unless anyone is planning on rewriting OutputStreamWriter, we
-        // have to flush here.
         out.flush();
     }
 
@@ -264,8 +262,6 @@ public class CopyUtils {
                 throws IOException {
         final OutputStreamWriter out = new OutputStreamWriter(output, encoding);
         copy(input, out);
-        // XXX Unless anyone is planning on rewriting OutputStreamWriter, we
-        // have to flush here.
         out.flush();
     }
 
@@ -312,11 +308,8 @@ public class CopyUtils {
             final OutputStream output)
                 throws IOException {
         final StringReader in = new StringReader(input);
-        // make explicit the dependency on the default encoding
         final OutputStreamWriter out = new OutputStreamWriter(output, Charset.defaultCharset());
         copy(in, out);
-        // XXX Unless anyone is planning on rewriting OutputStreamWriter, we
-        // have to flush here.
         out.flush();
     }
 
@@ -341,8 +334,7 @@ public class CopyUtils {
         final StringReader in = new StringReader(input);
         final OutputStreamWriter out = new OutputStreamWriter(output, encoding);
         copy(in, out);
-        // XXX Unless anyone is planning on rewriting OutputStreamWriter, we
-        // have to flush here.
+
         out.flush();
     }
 
@@ -361,11 +353,10 @@ public class CopyUtils {
     /**
      * Instances should NOT be constructed in standard programming.
      *
-     * @deprecated TODO Make private in 3.0.
+     * @deprecated Use static methods instead.
      */
     @Deprecated
     public CopyUtils() {
-        // empty
     }
 
 }

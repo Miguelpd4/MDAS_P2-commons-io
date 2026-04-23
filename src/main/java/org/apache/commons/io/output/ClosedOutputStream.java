@@ -52,7 +52,7 @@ public class ClosedOutputStream extends OutputStream {
      * Construct a new instance.
      */
     public ClosedOutputStream() {
-        // empty
+
     }
 
     /**

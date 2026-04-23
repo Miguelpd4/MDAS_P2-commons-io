@@ -69,7 +69,7 @@ public class FilterByteChannel<C extends ByteChannel> extends FilterChannel<C> i
          * Constructs a new builder for {@link FilterByteChannel}.
          */
         protected AbstractBuilder() {
-            // empty
+
         }
     }
 
@@ -82,7 +82,6 @@ public class FilterByteChannel<C extends ByteChannel> extends FilterChannel<C> i
          * Builds instances of {@link FilterByteChannel}.
          */
         protected Builder() {
-            // empty
         }
 
         @Override

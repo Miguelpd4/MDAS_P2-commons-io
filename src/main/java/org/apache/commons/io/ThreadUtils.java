@@ -72,6 +72,5 @@ public final class ThreadUtils {
      */
     @Deprecated
     public ThreadUtils() {
-        // empty
     }
 }

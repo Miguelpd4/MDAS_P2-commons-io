@@ -69,7 +69,6 @@ public final class ByteBuffers {
     }
 
     private ByteBuffers() {
-        // empty, no instance.
     }
 
 }

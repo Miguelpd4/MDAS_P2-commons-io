@@ -96,10 +96,9 @@ public class RandomAccessFiles {
     /**
      * Make private in 3.0.
      *
-     * @deprecated TODO Make private in 3.0.
+     * @deprecated Use static methods instead.
      */
     @Deprecated
     public RandomAccessFiles() {
-        // empty
     }
 }

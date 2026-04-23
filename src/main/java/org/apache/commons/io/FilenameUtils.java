@@ -1680,6 +1680,5 @@ public class FilenameUtils {
      */
     @Deprecated
     public FilenameUtils() {
-        // empty
     }
 }

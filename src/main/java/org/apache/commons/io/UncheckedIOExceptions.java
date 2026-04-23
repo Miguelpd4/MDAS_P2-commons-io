@@ -57,6 +57,5 @@ final class UncheckedIOExceptions {
     }
 
     private UncheckedIOExceptions() {
-        // no instance
     }
 }

@@ -33,7 +33,6 @@ public class DemuxOutputStream extends OutputStream {
      * Construct a new instance.
      */
     public DemuxOutputStream() {
-        // empty
     }
 
     /**

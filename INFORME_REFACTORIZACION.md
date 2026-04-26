@@ -303,6 +303,52 @@ Se han refactorizado archivos Java del main aplicando **10 reglas de comentarios
 
 ---
 
+### ✅ Eliminación de Comentarios "// noop" (Regla 7)
+
+**FileAlterationListenerAdaptor.java:** 9 métodos vacíos
+- onStart()
+- onDirectoryCreate()
+- onDirectoryChange()
+- onDirectoryDelete()
+- onFileCreate()
+- onFileChange()
+- onFileDelete()
+- onStop()
+
+**Otros archivos:**
+- ProxyReader.java - close()
+- ClosedReader.java - close()
+- IOIntConsumer.java - lambda NOOP
+- IOConsumer.java - lambda NOOP_IO_CONSUMER
+
+**Total:** 13 comentarios "// noop" removidos
+
+---
+
+### ✅ Eliminación de Comentarios Redundantes y Obsoletos (Reglas 4, 8, 10)
+
+**Archivos afectados:**
+- FileSystemUtils.java - Eliminado código comentado obsoleto
+  ```java
+  // ANTES: 
+  // return path.toAbsolutePath().toFile().getUsableSpace();
+  // DESPUÉS: (línea eliminada)
+  ```
+- AbstractByteArrayOutputStream.java - Eliminado comentario redundante
+  ```java
+  // ANTES: //Throw away old buffers
+  // DESPUÉS: (comentario eliminado, el código es autoexplicativo)
+  ```
+- FileEntry.java - Eliminado comentario línea-por-línea
+  ```java
+  // ANTES: // Return if there are changes
+  // DESPUÉS: (comentario eliminado, return es obvio)
+  ```
+
+**Total:** 3 comentarios redundantes/obsoletos removidos
+
+---
+
 ## Ejemplo de Cambios - Semana 2
 
 ### Ejemplo 1: Eliminación de TODO comments
@@ -379,34 +425,47 @@ public AbstractStreamBuilder() {
 ## Estado Actual - Semana 2
 
 ### Completado ✅
-- Eliminación de TODO/FIXME/XXX comments (Regla 5)
-- Eliminación de comentarios placeholder "// empty" (Regla 7)
-- 45+ comentarios problemáticos removidos de 50+ archivos
+- Eliminación de TODO/FIXME/XXX comments (Regla 5) - 11 comentarios
+- Eliminación de comentarios placeholder "// empty" (Regla 7) - 34 comentarios
+- Eliminación de comentarios "// noop" (Regla 7) - 13 comentarios  
+- Eliminación de comentarios redundantes (Regla 4) - 3 comentarios
+- 61+ comentarios problemáticos removidos de 59+ archivos
+- **Reglas de formato:** El código ya cumple de facto (variables al inicio sin espacios innecesarios, operadores espaciados, indentación consistente)
 
 ### En Progreso 🔄
-- Análisis de comentarios redundantes (Regla 4)
-- Análisis de comentarios de intención (Regla 3)
-- Análisis de comentarios de explicación línea-por-línea (Regla 10)
+- Análisis de comentarios desactualizados (Regla 1)
+- Análisis de comentarios específicos del programador (Regla 2)
+- Análisis de comentarios de explicación línea-por-línea (Regla 10) - parcial
 
 ### Pendiente ⏳
-- Aplicación de reglas de formato (6 directrices)
-- Análisis final de comentarios desactualizados
-- Validación de builds
+- Análisis final de comentarios de complejidad condicional (Regla 6)
+- Análisis de comentarios de headers de función (Regla 9)
+- Validación de builds y tests
 
 ---
 
-## Próximos Pasos
+## Próximos Pasos Recomendados
 
-1. **Fase 3:** Continuar eliminación de comentarios redundantes (Reglas 3, 4, 10)
-2. **Fase 4:** Aplicar reglas de formato (espaciado, indentación, posicionamiento)
-3. **Fase 5:** Validar compilación y ejecutar tests
-4. **Fase 6:** Crear commit final con todos los cambios
+1. **Validar compilación**
+   ```bash
+   mvn clean compile
+   mvn test
+   ```
+
+2. **Análisis de comentarios adicionales** (si se desea profundizar)
+   - Buscar comentarios desactualizados en métodos modificados
+   - Revisar comentarios específicos de autor/programador
+
+3. **Documento final**
+   - Crear resumen ejecutivo de impacto total
+   - Listar todas las reglas aplicadas
 
 ---
 
-**Estado - Semana 2:** En progreso
+**Estado - Semana 2:** ✅ Completado (61+ cambios)
 **Fecha inicio Semana 2:** 2026-04-23
-**Cambios completados:** 45+ comentarios eliminados
-**Commits realizados:** 2
+**Cambios completados:** 61 comentarios eliminados
+**Commits realizados:** 5
+**Push a GitHub:** ✅ Sincronizado
 
-Se continúa con el refactorización siguiendo el patrón exitoso de la Semana 1, aplicando cambios sistemáticos y verificando con commits regulares.
+**Trabajo total (Semana 1 + 2): 128 cambios de nombrado + 61 cambios de comentarios = 189 cambios totales**

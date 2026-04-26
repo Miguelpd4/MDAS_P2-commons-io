@@ -167,7 +167,6 @@ public class FileSystemUtils {
         if (Files.exists(path)) {
             // Need an absolute path for input like "" to work
             return Files.getFileStore(path.toAbsolutePath()).getUsableSpace();
-            // return path.toAbsolutePath().toFile().getUsableSpace();
         }
         throw new IllegalArgumentException(path.toString());
     }

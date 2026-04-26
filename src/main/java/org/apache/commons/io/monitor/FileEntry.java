@@ -246,7 +246,6 @@ public class FileEntry implements Serializable {
         }
         length = exists && !directory ? file.length() : 0;
 
-        // Return if there are changes
         return exists != origExists || !lastModified.equals(origLastModified) || directory != origDirectory
             || length != origLength;
     }

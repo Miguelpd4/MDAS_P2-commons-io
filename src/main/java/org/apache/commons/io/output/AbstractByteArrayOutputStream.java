@@ -178,7 +178,6 @@ public abstract class AbstractByteArrayOutputStream<T extends AbstractByteArrayO
         if (reuseBuffers) {
             currentBuffer = buffers.get(currentBufferIndex);
         } else {
-            //Throw away old buffers
             currentBuffer = null;
             final int size = buffers.get(0).length;
             buffers.clear();

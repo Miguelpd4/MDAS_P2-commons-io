@@ -162,7 +162,7 @@ public class TeeReader extends ProxyReader {
                 target.position(newPosition).limit(newLimit);
             }
         }
-        return n;
+        return charactersRead;
     }
 
 }

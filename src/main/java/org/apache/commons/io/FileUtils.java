@@ -1209,7 +1209,7 @@ public class FileUtils {
                             final byte octet = (byte) Integer.parseInt(url.substring(i + 1, i + 3), 16);
                             byteBuffer.put(octet);
                             i += 3;
-                        } while (i < n && url.charAt(i) == '%');
+                        } while (i < urlLength && url.charAt(i) == '%');
                         continue;
                     } catch (final IndexOutOfBoundsException | NumberFormatException ignored) {
                         // malformed percent-encoded octet, fall through and

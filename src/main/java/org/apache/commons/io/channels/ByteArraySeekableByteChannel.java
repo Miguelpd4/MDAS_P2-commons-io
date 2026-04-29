@@ -347,11 +347,11 @@ public class ByteArraySeekableByteChannel implements SeekableByteChannel {
             }
             if (newPosition > size) {
                 final int newPositionInt = (int) newPosition;
-                // Ensure that newPositionInt ≤ data.length
+                // Ensure that newPositionInt ≤ byteArrayBuffer.length
                 resize(newPositionInt);
                 size = newPositionInt;
             }
-            b.get(data, intPos, wanted);
+            b.get(byteArrayBuffer, intPos, wanted);
             position = newPosition;
             if (size < intPos) {
                 size = intPos;

@@ -336,13 +336,12 @@ public class XmlStreamReader extends Reader {
                 firstGT = xmlProlog.indexOf('>');
             }
             if (firstGT == -1) {
-                if (c == -1) {
+                if (offset == 0) {
                     throw new IOException("Unexpected end of XML stream");
                 }
                 throw new IOException("XML prolog or ROOT element not found on first " + offset + " bytes");
             }
-            final int bytesRead = offset;
-            if (bytesRead > 0) {
+            if (offset > 0) {
                 inputStream.reset();
                 final BufferedReader bReader = new BufferedReader(new StringReader(xmlProlog.substring(0, firstGT + 1)));
                 final StringBuilder prolog = new StringBuilder();

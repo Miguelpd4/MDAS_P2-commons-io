@@ -466,6 +466,34 @@ public class FilenameUtils {
      * @return true if the file names are equal, null equals null.
      * @since 1.3
      */
+    public static boolean equalsWithNormalization(String fileName1, String fileName2, final IOCase ioCase) {
+        return equals(fileName1, fileName2, true, ioCase);
+    }
+
+    /**
+     * Checks whether two file names are equal without normalization.
+     *
+     * @param fileName1  the first file name, may be null.
+     * @param fileName2  the second file name, may be null.
+     * @param ioCase  what case sensitivity rule to use, null means case-sensitive.
+     * @return true if the file names are equal, null equals null.
+     * @since 1.3
+     */
+    public static boolean equalsWithoutNormalization(String fileName1, String fileName2, final IOCase ioCase) {
+        return equals(fileName1, fileName2, false, ioCase);
+    }
+
+    /**
+     * Checks whether two file names are equal, optionally normalizing and providing
+     * control over the case-sensitivity.
+     *
+     * @param fileName1  the first file name, may be null.
+     * @param fileName2  the second file name, may be null.
+     * @param normalize  whether to normalize the file names.
+     * @param ioCase  what case sensitivity rule to use, null means case-sensitive.
+     * @return true if the file names are equal, null equals null.
+     * @since 1.3
+     */
     public static boolean equals(String fileName1, String fileName2, final boolean normalize, final IOCase ioCase) {
         if (fileName1 == null || fileName2 == null) {
             return fileName1 == null && fileName2 == null;

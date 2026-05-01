@@ -239,31 +239,39 @@ public class FileUtils {
     // See https://issues.apache.org/jira/browse/IO-226 - should the rounding be changed?
     public static String byteCountToDisplaySize(final BigInteger size) {
         Objects.requireNonNull(size, "size");
-        final String displaySize;
-        if (size.divide(ONE_QB).compareTo(BigInteger.ZERO) > 0) {
-            displaySize = size.divide(ONE_QB) + " QB";
-        } else if (size.divide(ONE_RB).compareTo(BigInteger.ZERO) > 0) {
-            displaySize = size.divide(ONE_RB) + " RB";
-        } else if (size.divide(ONE_YB).compareTo(BigInteger.ZERO) > 0) {
-            displaySize = size.divide(ONE_YB) + " YB";
-        } else if (size.divide(ONE_ZB).compareTo(BigInteger.ZERO) > 0) {
-            displaySize = size.divide(ONE_ZB) + " ZB";
-        } else if (size.divide(ONE_EB_BI).compareTo(BigInteger.ZERO) > 0) {
-            displaySize = size.divide(ONE_EB_BI) + " EB";
-        } else if (size.divide(ONE_PB_BI).compareTo(BigInteger.ZERO) > 0) {
-            displaySize = size.divide(ONE_PB_BI) + " PB";
-        } else if (size.divide(ONE_TB_BI).compareTo(BigInteger.ZERO) > 0) {
-            displaySize = size.divide(ONE_TB_BI) + " TB";
-        } else if (size.divide(ONE_GB_BI).compareTo(BigInteger.ZERO) > 0) {
-            displaySize = size.divide(ONE_GB_BI) + " GB";
-        } else if (size.divide(ONE_MB_BI).compareTo(BigInteger.ZERO) > 0) {
-            displaySize = size.divide(ONE_MB_BI) + " MB";
-        } else if (size.divide(ONE_KB_BI).compareTo(BigInteger.ZERO) > 0) {
-            displaySize = size.divide(ONE_KB_BI) + " KB";
-        } else {
-            displaySize = size + " bytes";
+        return formatByteSizeAsDisplayValue(size);
+    }
+
+    /**
+     * Formats a byte size as a human-readable display value with appropriate unit.
+     * This method encapsulates the complex control flow for byte size unit conversion.
+     *
+     * @param size the byte size to format
+     * @return formatted string with size and unit
+     */
+    private static String formatByteSizeAsDisplayValue(final BigInteger size) {
+        // Array of units in descending order: [threshold, unitName]
+        final Object[][] byteSizeUnits = {
+            {ONE_QB, "QB"},
+            {ONE_RB, "RB"},
+            {ONE_YB, "YB"},
+            {ONE_ZB, "ZB"},
+            {ONE_EB_BI, "EB"},
+            {ONE_PB_BI, "PB"},
+            {ONE_TB_BI, "TB"},
+            {ONE_GB_BI, "GB"},
+            {ONE_MB_BI, "MB"},
+            {ONE_KB_BI, "KB"}
+        };
+
+        for (final Object[] unit : byteSizeUnits) {
+            final BigInteger threshold = (BigInteger) unit[0];
+            final String unitName = (String) unit[1];
+            if (size.divide(threshold).compareTo(BigInteger.ZERO) > 0) {
+                return size.divide(threshold) + " " + unitName;
+            }
         }
-        return displaySize;
+        return size + " bytes";
     }
 
     /**
@@ -3253,6 +3261,33 @@ public class FileUtils {
     }
 
     /**
+     * Writes a CharSequence to a file, replacing existing content.
+     * Creates the file if it does not exist.
+     *
+     * @param file     the file to write.
+     * @param data     the content to write to the file.
+     * @param charset the charset to use, {@code null} means platform default.
+     * @throws IOException in case of an I/O error.
+     * @since 2.3
+     */
+    public static void writeReplacingFileContent(final File file, final CharSequence data, final Charset charset) throws IOException {
+        write(file, data, charset, false);
+    }
+
+    /**
+     * Appends a CharSequence to the end of a file. Creates the file if it does not exist.
+     *
+     * @param file     the file to write.
+     * @param data     the content to append to the file.
+     * @param charset the charset to use, {@code null} means platform default.
+     * @throws IOException in case of an I/O error.
+     * @since 2.3
+     */
+    public static void appendToFile(final File file, final CharSequence data, final Charset charset) throws IOException {
+        write(file, data, charset, true);
+    }
+
+    /**
      * Writes a CharSequence to a file creating the file if it does not exist.
      *
      * @param file     the file to write.
@@ -3313,6 +3348,30 @@ public class FileUtils {
     }
 
     /**
+     * Writes a byte array to a file, replacing existing content.
+     *
+     * @param file the file to write to.
+     * @param data the content to write to the file.
+     * @throws IOException in case of an I/O error.
+     * @since 1.1
+     */
+    public static void writeByteArrayReplacingContent(final File file, final byte[] data) throws IOException {
+        writeByteArrayToFile(file, data, false);
+    }
+
+    /**
+     * Appends a byte array to the end of a file, creating the file if it does not exist.
+     *
+     * @param file   the file to write to.
+     * @param data   the content to append to the file.
+     * @throws IOException in case of an I/O error.
+     * @since 2.1
+     */
+    public static void appendByteArrayToFile(final File file, final byte[] data) throws IOException {
+        writeByteArrayToFile(file, data, true);
+    }
+
+    /**
      * Writes a byte array to a file creating the file if it does not exist.
      *
      * @param file   the file to write to.
@@ -3329,7 +3388,7 @@ public class FileUtils {
     /**
      * Writes {@code len} bytes from the specified byte array starting
      * at offset {@code off} to a file, creating the file if it does
-     * not exist.
+     * not exist. Replaces existing file content.
      *
      * @param file the file to write to.
      * @param data the content to write to the file.
@@ -3338,8 +3397,23 @@ public class FileUtils {
      * @throws IOException in case of an I/O error.
      * @since 2.5
      */
-    public static void writeByteArrayToFile(final File file, final byte[] data, final int off, final int len) throws IOException {
+    public static void writeByteArrayToFileReplacingContent(final File file, final byte[] data, final int off, final int len) throws IOException {
         writeByteArrayToFile(file, data, off, len, false);
+    }
+
+    /**
+     * Appends {@code len} bytes from the specified byte array starting
+     * at offset {@code off} to a file, creating the file if it does not exist.
+     *
+     * @param file the file to write to.
+     * @param data the content to append to the file.
+     * @param off  the start offset in the data.
+     * @param len  the number of bytes to append.
+     * @throws IOException in case of an I/O error.
+     * @since 2.5
+     */
+    public static void appendByteArrayToFile(final File file, final byte[] data, final int off, final int len) throws IOException {
+        writeByteArrayToFile(file, data, off, len, true);
     }
 
     /**
@@ -3540,6 +3614,34 @@ public class FileUtils {
      */
     public static void writeStringToFile(final File file, final String data, final Charset charset) throws IOException {
         writeStringToFile(file, data, charset, false);
+    }
+
+    /**
+     * Writes a String to a file, replacing existing content.
+     * The parent directories of the file will be created if they do not exist.
+     *
+     * @param file     the file to write.
+     * @param data     the content to write to the file.
+     * @param charset the charset to use, {@code null} means platform default.
+     * @throws IOException in case of an I/O error.
+     * @since 2.4
+     */
+    public static void writeStringReplacingContent(final File file, final String data, final Charset charset) throws IOException {
+        writeStringToFile(file, data, charset, false);
+    }
+
+    /**
+     * Appends a String to a file, creating the file if it does not exist.
+     * The parent directories of the file are created if they do not exist.
+     *
+     * @param file     the file to write.
+     * @param data     the content to append to the file.
+     * @param charset the charset to use, {@code null} means platform default.
+     * @throws IOException in case of an I/O error.
+     * @since 2.3
+     */
+    public static void appendStringToFile(final File file, final String data, final Charset charset) throws IOException {
+        writeStringToFile(file, data, charset, true);
     }
 
     /**

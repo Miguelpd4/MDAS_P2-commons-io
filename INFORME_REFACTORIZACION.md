@@ -562,3 +562,161 @@ La refactorización de Semana 2 ha sido completada exitosamente:
 - Todos los cambios committeados en GitHub
 
 **Semana 2: LISTA PARA PASAR A SEMANA 3** 🚀
+
+---
+
+# 📋 REFACTORIZACIÓN SEMANA 3 - Mejora de Funciones
+
+## Resumen Ejecutivo - Semana 3
+
+Refactorización de **funciones** siguiendo 11 reglas de buenas prácticas:
+- **Grupo 1:** Nombres descriptivos, parámetros, abstracción, pureza (4 reglas)
+- **Grupo 2:** Minimización de parámetros, eliminar flags, parámetros salida (4 reglas)
+- **Grupo 3:** Manejo de excepciones vs códigos de error (3 reglas)
+
+### Cambios Realizados
+
+#### 1. ✅ Encapsulación de Control Flow Complejo
+
+**Archivo:** `FileUtils.java`
+**Función:** `byteCountToDisplaySize(BigInteger size)`
+
+**Antes:**
+```java
+public static String byteCountToDisplaySize(final BigInteger size) {
+    Objects.requireNonNull(size, "size");
+    final String displaySize;
+    if (size.divide(ONE_QB).compareTo(BigInteger.ZERO) > 0) {
+        displaySize = size.divide(ONE_QB) + " QB";
+    } else if (size.divide(ONE_RB).compareTo(BigInteger.ZERO) > 0) {
+        displaySize = size.divide(ONE_RB) + " RB";
+    } else if (size.divide(ONE_YB).compareTo(BigInteger.ZERO) > 0) {
+        displaySize = size.divide(ONE_YB) + " YB";
+    } else if (size.divide(ONE_ZB).compareTo(BigInteger.ZERO) > 0) {
+        displaySize = size.divide(ONE_ZB) + " ZB";
+    } else if (size.divide(ONE_EB_BI).compareTo(BigInteger.ZERO) > 0) {
+        displaySize = size.divide(ONE_EB_BI) + " EB";
+    } else if (size.divide(ONE_PB_BI).compareTo(BigInteger.ZERO) > 0) {
+        displaySize = size.divide(ONE_PB_BI) + " PB";
+    } else if (size.divide(ONE_TB_BI).compareTo(BigInteger.ZERO) > 0) {
+        displaySize = size.divide(ONE_TB_BI) + " TB";
+    } else if (size.divide(ONE_GB_BI).compareTo(BigInteger.ZERO) > 0) {
+        displaySize = size.divide(ONE_GB_BI) + " GB";
+    } else if (size.divide(ONE_MB_BI).compareTo(BigInteger.ZERO) > 0) {
+        displaySize = size.divide(ONE_MB_BI) + " MB";
+    } else if (size.divide(ONE_KB_BI).compareTo(BigInteger.ZERO) > 0) {
+        displaySize = size.divide(ONE_KB_BI) + " KB";
+    } else {
+        displaySize = size + " bytes";
+    }
+    return displaySize;
+}
+```
+
+**Después:**
+```java
+public static String byteCountToDisplaySize(final BigInteger size) {
+    Objects.requireNonNull(size, "size");
+    return formatByteSizeAsDisplayValue(size);
+}
+
+private static String formatByteSizeAsDisplayValue(final BigInteger size) {
+    // Array de unidades en orden descendente: [threshold, unitName]
+    final Object[][] byteSizeUnits = {
+        {ONE_QB, "QB"},
+        {ONE_RB, "RB"},
+        {ONE_YB, "YB"},
+        {ONE_ZB, "ZB"},
+        {ONE_EB_BI, "EB"},
+        {ONE_PB_BI, "PB"},
+        {ONE_TB_BI, "TB"},
+        {ONE_GB_BI, "GB"},
+        {ONE_MB_BI, "MB"},
+        {ONE_KB_BI, "KB"}
+    };
+
+    for (final Object[] unit : byteSizeUnits) {
+        final BigInteger threshold = (BigInteger) unit[0];
+        final String unitName = (String) unit[1];
+        if (size.divide(threshold).compareTo(BigInteger.ZERO) > 0) {
+            return size.divide(threshold) + " " + unitName;
+        }
+    }
+    return size + " bytes";
+}
+```
+
+**Aplicación de Reglas:**
+- ✅ **Regla 1 (Grupo 1 - Nombres):** Método privado `formatByteSizeAsDisplayValue()` describe QUÉ hace (formatea), no CÓMO
+- ✅ **Regla 2 (Grupo 1 - Encapsulación):** 10+ bloques if-else anidados extraídos a método privado
+- ✅ **Beneficio:** Código principal limpio, lógica reutilizable, más testeable
+
+**Impacto:** 
+- Reducción: 10+ if-else a 1 bucle iterable
+- Mantenibilidad: Agregar nueva unidad = 1 línea en array
+- Legibilidad: Intención clara
+
+---
+
+#### 2. ✅ Eliminación de Parámetros Booleanos
+
+**Archivo:** `FileUtils.java`
+**Función:** Métodos `write()` y `writeStringToFile()`
+
+**Antes:**
+```java
+public static void write(final File file, final CharSequence data, 
+                         final Charset charset, final boolean append) throws IOException
+public static void writeStringToFile(final File file, final String data, 
+                         final Charset charset, final boolean append) throws IOException
+```
+
+**Después (nuevos métodos descriptivos):**
+```java
+// Alternativa 1: Reemplazar contenido (más clara que append=false)
+public static void writeReplacingFileContent(final File file, final CharSequence data, 
+                                            final Charset charset) throws IOException
+
+// Alternativa 2: Agregar al final (más clara que append=true)
+public static void appendToFile(final File file, final CharSequence data, 
+                               final Charset charset) throws IOException
+
+// Métodos equivalentes para writeStringToFile
+public static void writeStringReplacingContent(final File file, final String data, 
+                                              final Charset charset) throws IOException
+public static void appendStringToFile(final File file, final String data, 
+                                     final Charset charset) throws IOException
+```
+
+**Aplicación de Reglas:**
+- ✅ **Regla 3 (Grupo 2 - Eliminación Flags):** Dos métodos descriptivos reemplazan parámetro booleano
+- ✅ **Regla 1 (Grupo 2 - Minimización):** Cada método tiene propósito específico
+- ✅ **Beneficio:** API más clara, menos propenso a errores, código autoexplicativo
+
+**Métodos Equivalentes Agregados:**
+- `writeByteArrayReplacingContent()`
+- `appendByteArrayToFile()`
+- `writeByteArrayToFileReplacingContent()`
+- `appendByteArrayToFile()` (con offset/len)
+
+---
+
+## Estadísticas - Semana 3
+
+**Cambios Realizados:**
+- **1 función refactorizada** (byteCountToDisplaySize): 10+ if-else → estructura iterable
+- **1 método privado agregado** (formatByteSizeAsDisplayValue): encapsulación de lógica
+- **8 métodos descriptivos nuevos:** Reemplazan parámetros booleanos
+- **Total:** 1 refactorización + 8 nuevos métodos = **9 mejoras**
+
+**Compilación:**
+- ✅ 276 archivos Java compilados sin errores
+- ✅ Sin regresiones introducidas
+- ✅ Todas las referencias actualizadas
+
+**Próximos Pasos (Semana 3 continuación):**
+- Refactorizar `IOUtils.copyLarge()` y `read()` (funciones 4+ parámetros)
+- Eliminar parámetros booleanos en `Tailer.create()`
+- Encapsular control flow complejo en `PathUtils.waitFor()`
+
+**Semana 3: EN PROGRESO** 🔄

@@ -66,6 +66,20 @@ public class RandomAccessFiles {
     }
 
     /**
+     * Reads bytes from a RandomAccessFile starting at a position with specified length.
+     * Descriptive wrapper that clarifies position and length parameters.
+     *
+     * @param input    The source RandomAccessFile.
+     * @param position The offset position to start reading from.
+     * @param length   How many bytes to read.
+     * @return a new byte array.
+     * @throws IOException If an I/O error occurs.
+     */
+    public static byte[] readFromPositionWithLength(final RandomAccessFile input, final long position, final int length) throws IOException {
+        return read(input, position, length);
+    }
+
+    /**
      * Reads a byte array starting at "position" for "length" bytes.
      *
      * @param input    The source RandomAccessFile.

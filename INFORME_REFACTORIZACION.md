@@ -703,20 +703,30 @@ public static void appendStringToFile(final File file, final String data,
 
 ## Estadísticas - Semana 3
 
-**Cambios Realizados:**
+**Cambios Realizados - Iteración 1-4:**
 - **1 función refactorizada** (byteCountToDisplaySize): 10+ if-else → estructura iterable
 - **1 método privado agregado** (formatByteSizeAsDisplayValue): encapsulación de lógica
-- **8 métodos descriptivos nuevos:** Reemplazan parámetros booleanos
-- **Total:** 1 refactorización + 8 nuevos métodos = **9 mejoras**
+- **18 métodos descriptivos nuevos totales:**
+  - FileUtils: 6 (copyFile + copyFileToDirectory wrappers con preserveDate)
+  - FileUtils: 2 (copyDirectory wrappers con preserveDate)
+  - IOUtils: 2 (copyLargeWithOffset para InputStream y Reader)
+  - PathUtils: 1 (fileContentEqualsWithDefaults)
+  - PathUtils: 2 (writeStringReplacingContent, appendStringToFile)
+  - ProxyOutputStream: 1 (writeRepeatWithOffsetAndLength)
+- **Total:** 1 refactorización + 18 nuevos métodos = **19 mejoras**
 
 **Compilación:**
 - ✅ 276 archivos Java compilados sin errores
 - ✅ Sin regresiones introducidas
 - ✅ Todas las referencias actualizadas
 
+**Commits Realizados:**
+- `8c582eb27` - Semana 3 Parte 3: 17 nuevos métodos descriptivos
+- `244b13cea` - Semana 3 Parte 4: 1 método adicional en ProxyOutputStream
+
 **Próximos Pasos (Semana 3 continuación):**
-- Refactorizar `IOUtils.copyLarge()` y `read()` (funciones 4+ parámetros)
-- Eliminar parámetros booleanos en `Tailer.create()`
-- Encapsular control flow complejo en `PathUtils.waitFor()`
+- Refactorizar `IOUtils.read()` y `readFully()` (funciones 4 parámetros)
+- Refactorizar más métodos con encapsulación de control flow
+- Aplicar patrones de excepción handling
 
 **Semana 3: EN PROGRESO** 🔄

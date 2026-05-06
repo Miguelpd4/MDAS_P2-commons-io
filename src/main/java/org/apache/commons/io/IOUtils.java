@@ -2115,6 +2115,23 @@ public class IOUtils {
     }
 
     /**
+     * Reads bytes from an input stream with specified offset and length.
+     * Descriptive wrapper that clarifies offset and length parameters.
+     *
+     * @param input  where to read input.
+     * @param buffer destination.
+     * @param offset initial offset into buffer.
+     * @param length length to read, must be >= 0.
+     * @return actual length read; may be less than requested if EOF was reached.
+     * @throws NullPointerException      if {@code input} or {@code buffer} is null.
+     * @throws IndexOutOfBoundsException if {@code offset} or {@code length} is negative.
+     * @throws IOException               if a read error occurs.
+     */
+    public static int readWithOffsetAndLength(final InputStream input, final byte[] buffer, final int offset, final int length) throws IOException {
+        return read(input, buffer, offset, length);
+    }
+
+    /**
      * Reads bytes from an input stream.
      * <p>
      * This implementation guarantees that it will read as many bytes as possible before giving up; this may not always be the case for subclasses of
@@ -2124,7 +2141,7 @@ public class IOUtils {
      * @param input  where to read input.
      * @param buffer destination.
      * @param offset initial offset into buffer.
-     * @param length length to read, must be &gt;= 0.
+     * @param length length to read, must be >= 0.
      * @return actual length read; may be less than requested if EOF was reached.
      * @throws NullPointerException      if {@code input} or {@code buffer} is null.
      * @throws IndexOutOfBoundsException if {@code offset} or {@code length} is negative, or if {@code offset + length} is greater than {@code buffer.length}.
@@ -2187,6 +2204,23 @@ public class IOUtils {
     }
 
     /**
+     * Reads characters from a Reader with specified offset and length.
+     * Descriptive wrapper that clarifies offset and length parameters.
+     *
+     * @param reader where to read input from.
+     * @param buffer destination.
+     * @param offset initial offset into buffer.
+     * @param length length to read, must be >= 0.
+     * @return actual length read; may be less than requested if EOF was reached.
+     * @throws NullPointerException      if {@code reader} or {@code buffer} is null.
+     * @throws IndexOutOfBoundsException if {@code offset} or {@code length} is negative.
+     * @throws IOException               if a read error occurs.
+     */
+    public static int readWithOffsetAndLength(final Reader reader, final char[] buffer, final int offset, final int length) throws IOException {
+        return read(reader, buffer, offset, length);
+    }
+
+    /**
      * Reads characters from an input character stream.
      * <p>
      * This implementation guarantees that it will read as many characters as possible before giving up; this may not always be the case for subclasses of
@@ -2215,6 +2249,24 @@ public class IOUtils {
             remaining -= count;
         }
         return length - remaining;
+    }
+
+    /**
+     * Reads the requested number of bytes or fail if there are not enough left.
+     * <p>
+     * This allows for the possibility that {@link InputStream#read(byte[], int, int)} may not read as many bytes as requested (most likely because of reaching
+     * EOF).
+     * </p>
+     *
+     * @param input  where to read input from.
+     * @param buffer destination.
+     * @throws NullPointerException if {@code input} or {@code buffer} is null.
+     * @throws EOFException         if the number of bytes read was incorrect.
+     * @throws IOException          if there is a problem reading the file.
+     * @since 2.2
+     */
+    public static void readFullyEntireBuffer(final InputStream input, final byte[] buffer) throws IOException {
+        readFully(input, buffer, 0, buffer.length);
     }
 
     /**
@@ -2299,6 +2351,24 @@ public class IOUtils {
         if (actual != expected) {
             throw new EOFException("Length to read: " + expected + " actual: " + actual);
         }
+    }
+
+    /**
+     * Reads the requested number of characters or fail if there are not enough left.
+     * <p>
+     * This allows for the possibility that {@link Reader#read(char[], int, int)} may not read as many characters as requested (most likely because of reaching
+     * EOF).
+     * </p>
+     *
+     * @param reader where to read input from.
+     * @param buffer destination.
+     * @throws NullPointerException if {@code reader} or {@code buffer} is null.
+     * @throws EOFException         if the number of characters read was incorrect.
+     * @throws IOException          if there is a problem reading the file.
+     * @since 2.2
+     */
+    public static void readFullyEntireBuffer(final Reader reader, final char[] buffer) throws IOException {
+        readFully(reader, buffer, 0, buffer.length);
     }
 
     /**

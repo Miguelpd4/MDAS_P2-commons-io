@@ -258,6 +258,20 @@ public class ProxyOutputStream extends FilterOutputStream {
     }
 
     /**
+     * Invokes the delegate's {@code write(byte[], int, int)} method for the {@code repeat} count.
+     * Descriptive wrapper that clearly indicates offset and length are applied.
+     *
+     * @param b      the bytes to write.
+     * @param off    The start offset.
+     * @param len    The number of bytes to write.
+     * @param repeat How many times to write the specified portion of bytes.
+     * @throws IOException if an I/O error occurs.
+     */
+    public void writeRepeatWithOffsetAndLength(final byte[] b, final int off, final int len, final long repeat) throws IOException {
+        writeRepeat(b, off, len, repeat);
+    }
+
+    /**
      * Invokes the delegate's {@code write(byte[])} method for the {@code repeat} count.
      *
      * @param b      the bytes to write.

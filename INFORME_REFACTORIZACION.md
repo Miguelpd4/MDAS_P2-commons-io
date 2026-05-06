@@ -703,17 +703,18 @@ public static void appendStringToFile(final File file, final String data,
 
 ## Estadísticas - Semana 3
 
-**Cambios Realizados - Iteración 1-4:**
+**Cambios Realizados - Iteración 1-5:**
 - **1 función refactorizada** (byteCountToDisplaySize): 10+ if-else → estructura iterable
 - **1 método privado agregado** (formatByteSizeAsDisplayValue): encapsulación de lógica
-- **18 métodos descriptivos nuevos totales:**
+- **23 métodos descriptivos nuevos totales:**
   - FileUtils: 6 (copyFile + copyFileToDirectory wrappers con preserveDate)
   - FileUtils: 2 (copyDirectory wrappers con preserveDate)
-  - IOUtils: 2 (copyLargeWithOffset para InputStream y Reader)
+  - IOUtils: 4 (2x copyLargeWithOffset, 2x readWithOffsetAndLength)
+  - IOUtils: 2 (readFullyEntireBuffer para InputStream y Reader)
   - PathUtils: 1 (fileContentEqualsWithDefaults)
   - PathUtils: 2 (writeStringReplacingContent, appendStringToFile)
   - ProxyOutputStream: 1 (writeRepeatWithOffsetAndLength)
-- **Total:** 1 refactorización + 18 nuevos métodos = **19 mejoras**
+- **Total:** 1 refactorización + 23 nuevos métodos = **25 mejoras**
 
 **Compilación:**
 - ✅ 276 archivos Java compilados sin errores
@@ -721,12 +722,33 @@ public static void appendStringToFile(final File file, final String data,
 - ✅ Todas las referencias actualizadas
 
 **Commits Realizados:**
-- `8c582eb27` - Semana 3 Parte 3: 17 nuevos métodos descriptivos
-- `244b13cea` - Semana 3 Parte 4: 1 método adicional en ProxyOutputStream
+- `8c582eb27` - Semana 3 Parte 3: 17 nuevos métodos descriptivos (FileUtils, IOUtils, PathUtils)
+- `244b13cea` - Semana 3 Parte 4: ProxyOutputStream wrapper
+- `d5f0fa1d2` - Semana 3 Parte 5: IOUtils read/readFully wrappers
+
+**GitHub:**
+- ✅ Todos los commits pusheados a rama `semana-1-nombrado`
+- ✅ 3 nuevos commits añadidos en esta sesión
+
+**Patrones Aplicados:**
+1. **Eliminación de parámetros booleanos** mediante nombres descriptivos
+   - `copyFilePreservingDate()` vs `copyFileWithoutPreservingDate()`
+   - `writeStringReplacingContent()` vs `appendStringToFile()`
+   - `fileContentEqualsWithDefaults()`
+
+2. **Simplificación de parámetros múltiples**
+   - `readWithOffsetAndLength()` → clarifica offset y length
+   - `writeRepeatWithOffsetAndLength()` → elimina ambigüedad
+   - `readFullyEntireBuffer()` → simplifica lectura de buffer completo
+
+3. **Encapsulación de lógica**
+   - `formatByteSizeAsDisplayValue()` encapsula 10+ if-else en iteración
+   - Mantiene métodos originales por compatibilidad
 
 **Próximos Pasos (Semana 3 continuación):**
-- Refactorizar `IOUtils.read()` y `readFully()` (funciones 4 parámetros)
-- Refactorizar más métodos con encapsulación de control flow
-- Aplicar patrones de excepción handling
+- Refactorizar métodos con control flow complejo anidado
+- Aplicar exception handling patterns
+- Buscar más métodos con parámetros de estado
+- Aplicar patrones de Builder donde sea relevante
 
-**Semana 3: EN PROGRESO** 🔄
+**Semana 3: EN PROGRESO** 🔄 (25 de ~50+ mejoras completadas)

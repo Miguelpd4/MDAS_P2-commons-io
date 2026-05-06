@@ -623,6 +623,34 @@ public class Tailer implements Runnable, AutoCloseable {
     }
 
     /**
+     * Creates a Tailer that starts from end of file and reopens on each check.
+     * Descriptive wrapper eliminating need for boolean parameters.
+     *
+     * @param file the file to follow.
+     * @param tailerListener the TailerListener to use.
+     * @param delayMillis the delay between checks in milliseconds.
+     * @return The new tailer configured to start from end with reopen enabled.
+     * @deprecated Use {@link #builder()}, {@link Builder}, and {@link Builder#get()}.
+     */
+    public static Tailer createTailingFromEnd(final File file, final TailerListener tailerListener, final long delayMillis) {
+        return create(file, tailerListener, delayMillis, true, true);
+    }
+
+    /**
+     * Creates a Tailer that starts from beginning of file and reopens on each check.
+     * Descriptive wrapper eliminating need for boolean parameters.
+     *
+     * @param file the file to follow.
+     * @param tailerListener the TailerListener to use.
+     * @param delayMillis the delay between checks in milliseconds.
+     * @return The new tailer configured to start from beginning with reopen enabled.
+     * @deprecated Use {@link #builder()}, {@link Builder}, and {@link Builder#get()}.
+     */
+    public static Tailer createTailingFromBeginning(final File file, final TailerListener tailerListener, final long delayMillis) {
+        return create(file, tailerListener, delayMillis, false, true);
+    }
+
+    /**
      * Creates and starts a Tailer for the given file.
      *
      * @param file the file to follow.

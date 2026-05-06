@@ -512,6 +512,30 @@ public class FilenameUtils {
     }
 
     /**
+     * Compares two file names after normalization with case-sensitive comparison.
+     * Descriptive wrapper eliminating boolean parameters.
+     *
+     * @param fileName1 first file name.
+     * @param fileName2 second file name.
+     * @return true if equal after normalization and case-sensitive comparison.
+     */
+    public static boolean equalsNormalizedCaseSensitive(final String fileName1, final String fileName2) {
+        return equals(fileName1, fileName2, true, IOCase.SENSITIVE);
+    }
+
+    /**
+     * Compares two file names after normalization with case-insensitive comparison.
+     * Descriptive wrapper eliminating boolean parameters.
+     *
+     * @param fileName1 first file name.
+     * @param fileName2 second file name.
+     * @return true if equal after normalization and case-insensitive comparison.
+     */
+    public static boolean equalsNormalizedCaseInsensitive(final String fileName1, final String fileName2) {
+        return equals(fileName1, fileName2, true, IOCase.INSENSITIVE);
+    }
+
+    /**
      * Checks whether two file names are equal after both have been normalized.
      * <p>
      * Both file names are first passed to {@link #normalize(String)}.
@@ -1342,6 +1366,28 @@ public class FilenameUtils {
      */
     public static String normalize(final String fileName, final boolean unixSeparator) {
         return doNormalize(fileName, toSeparator(unixSeparator), true);
+    }
+
+    /**
+     * Normalizes a path using Unix separators (forward slashes).
+     * Descriptive wrapper that clarifies separator behavior.
+     *
+     * @param fileName the path to normalize.
+     * @return the normalized path with Unix separators, or null if invalid.
+     */
+    public static String normalizeToUnixSeparators(final String fileName) {
+        return normalize(fileName, true);
+    }
+
+    /**
+     * Normalizes a path using Windows separators (backslashes).
+     * Descriptive wrapper that clarifies separator behavior.
+     *
+     * @param fileName the path to normalize.
+     * @return the normalized path with Windows separators, or null if invalid.
+     */
+    public static String normalizeToWindowsSeparators(final String fileName) {
+        return normalize(fileName, false);
     }
 
     /**

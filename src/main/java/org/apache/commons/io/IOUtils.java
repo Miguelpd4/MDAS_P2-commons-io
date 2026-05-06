@@ -1829,6 +1829,23 @@ public class IOUtils {
     }
 
     /**
+     * Copies a large amount of data from input to output with offset and length using a custom buffer.
+     * Descriptive wrapper clarifying offset, length, and buffer usage.
+     *
+     * @param input the input stream to copy from.
+     * @param output the output stream to write to.
+     * @param inputOffset bytes to skip before copying.
+     * @param length maximum bytes to copy (0 = all).
+     * @param buffer the buffer to use for reading/writing.
+     * @return the number of bytes actually copied.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static long copyLargeWithOffsetAndBuffer(final InputStream input, final OutputStream output, final long inputOffset, final long length, final byte[] buffer)
+            throws IOException {
+        return copyLarge(input, output, inputOffset, length, buffer);
+    }
+
+    /**
      * Copies chars from a large (over 2GB) {@link Reader} to a {@link Writer}.
      * <p>
      * This method buffers the input internally, so there is no need to use a {@link BufferedReader}.
@@ -1915,6 +1932,46 @@ public class IOUtils {
      * @since 2.2
      */
     public static long copyLarge(final Reader reader, final Writer writer, final long inputOffset, final long length, final char[] buffer) throws IOException {
+        if (inputOffset > 0) {
+            skipFully(reader, inputOffset);
+        }
+        if (length == 0) {
+            return 0;
+        }
+        final int bufferLength = buffer.length;
+        int charsToRead = bufferLength;
+        if (length > 0 && length < bufferLength) {
+            charsToRead = (int) length;
+        }
+        int read;
+        long totalRead = 0;
+        while (charsToRead > 0 && EOF != (read = reader.read(buffer, 0, charsToRead))) {
+            writer.write(buffer, 0, read);
+            totalRead += read;
+            if (length > 0) {
+                charsToRead = (int) Math.min(length - totalRead, bufferLength);
+            }
+        }
+        return totalRead;
+    }
+
+    /**
+     * Copies characters from a large Reader to Writer with offset and length using a custom buffer.
+     * Descriptive wrapper clarifying offset, length, and buffer usage.
+     *
+     * @param reader the source Reader.
+     * @param writer the destination Writer.
+     * @param inputOffset characters to skip before copying.
+     * @param length maximum characters to copy (0 or less = all).
+     * @param buffer the buffer to use for reading/writing.
+     * @return the number of characters actually copied.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static long copyLargeWithOffsetAndBuffer(final Reader reader, final Writer writer, final long inputOffset, final long length, final char[] buffer) throws IOException {
+        return copyLarge(reader, writer, inputOffset, length, buffer);
+    }
+
+    /**
         if (inputOffset > 0) {
             skipFully(reader, inputOffset);
         }

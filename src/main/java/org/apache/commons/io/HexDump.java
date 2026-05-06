@@ -75,6 +75,25 @@ public class HexDump {
     }
 
     /**
+     * Dumps entire byte array to hex format with offset, index and length all specified.
+     * Descriptive wrapper clarifying offset, starting position and count parameters.
+     *
+     * @param data the byte array to be dumped.
+     * @param fileOffset the hexadecimal offset to display (e.g., file position).
+     * @param appendable the Appendable to write the dump output to.
+     * @param startIndex the starting index within the data array.
+     * @param length the number of bytes to dump.
+     * @throws IOException if writing fails.
+     * @throws ArrayIndexOutOfBoundsException if parameters are invalid.
+     */
+    public static void dumpWithOffsetAndRange(final byte[] data, final long fileOffset,
+                            final Appendable appendable, final int startIndex,
+                            final int length)
+            throws IOException, ArrayIndexOutOfBoundsException {
+        dump(data, fileOffset, appendable, startIndex, length);
+    }
+
+    /**
      * Dumps an array of bytes to an Appendable. The output is formatted
      * for human inspection, with a hexadecimal offset followed by the
      * hexadecimal values of the next 16 bytes of data and the printable ASCII

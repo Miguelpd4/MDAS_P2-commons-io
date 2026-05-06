@@ -563,6 +563,30 @@ public class FileUtils {
     }
 
     /**
+     * Copies a whole directory to a new location, preserving file dates.
+     * Descriptive wrapper that clearly indicates dates are preserved.
+     *
+     * @param srcDir  an existing directory to copy, must not be {@code null}.
+     * @param destDir the new directory, must not be {@code null}.
+     * @throws IOException if an error occurs or setting the last-modified time didn't succeed.
+     */
+    public static void copyDirectoryPreservingDates(final File srcDir, final File destDir) throws IOException {
+        copyDirectory(srcDir, destDir, true);
+    }
+
+    /**
+     * Copies a whole directory to a new location, without preserving file dates.
+     * Descriptive wrapper for cases where dates are not important.
+     *
+     * @param srcDir  an existing directory to copy, must not be {@code null}.
+     * @param destDir the new directory, must not be {@code null}.
+     * @throws IOException if an error occurs.
+     */
+    public static void copyDirectoryWithoutPreservingDates(final File srcDir, final File destDir) throws IOException {
+        copyDirectory(srcDir, destDir, false);
+    }
+
+    /**
      * Copies a whole directory to a new location.
      * <p>
      * This method copies the contents of the specified source directory to within the specified destination directory.
@@ -820,6 +844,30 @@ public class FileUtils {
     }
 
     /**
+     * Copies a file to a new location, preserving modification date.
+     * Descriptive wrapper that clearly indicates dates are preserved.
+     *
+     * @param srcFile  an existing file to copy, must not be {@code null}.
+     * @param destFile the new file, must not be {@code null}.
+     * @throws IOException if source or destination is invalid or an I/O error occurs.
+     */
+    public static void copyFilePreservingDate(final File srcFile, final File destFile) throws IOException {
+        copyFile(srcFile, destFile, true);
+    }
+
+    /**
+     * Copies a file to a new location, without preserving modification date.
+     * Descriptive wrapper for cases where dates are not important.
+     *
+     * @param srcFile  an existing file to copy, must not be {@code null}.
+     * @param destFile the new file, must not be {@code null}.
+     * @throws IOException if source or destination is invalid or an I/O error occurs.
+     */
+    public static void copyFileWithoutPreservingDate(final File srcFile, final File destFile) throws IOException {
+        copyFile(srcFile, destFile, false);
+    }
+
+    /**
      * Copies an existing file to a new file location.
      * <p>
      * This method copies the contents of the specified source file to the specified destination file. The directory
@@ -960,6 +1008,30 @@ public class FileUtils {
      */
     public static void copyFileToDirectory(final File srcFile, final File destDir) throws IOException {
         copyFileToDirectory(srcFile, destDir, true);
+    }
+
+    /**
+     * Copies a file to a directory, preserving the modification date.
+     * Descriptive wrapper that clearly indicates dates are preserved.
+     *
+     * @param sourceFile     an existing file to copy, must not be {@code null}.
+     * @param destinationDir an existing directory where the file is copied, must not be {@code null}.
+     * @throws IOException if source or destination is invalid or an I/O error occurs.
+     */
+    public static void copyFileToDirectoryPreservingDate(final File sourceFile, final File destinationDir) throws IOException {
+        copyFileToDirectory(sourceFile, destinationDir, true);
+    }
+
+    /**
+     * Copies a file to a directory, without preserving the modification date.
+     * Descriptive wrapper for cases where dates are not important.
+     *
+     * @param sourceFile     an existing file to copy, must not be {@code null}.
+     * @param destinationDir an existing directory where the file is copied, must not be {@code null}.
+     * @throws IOException if source or destination is invalid or an I/O error occurs.
+     */
+    public static void copyFileToDirectoryWithoutPreservingDate(final File sourceFile, final File destinationDir) throws IOException {
+        copyFileToDirectory(sourceFile, destinationDir, false);
     }
 
     /**

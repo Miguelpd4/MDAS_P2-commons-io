@@ -1765,6 +1765,24 @@ public class IOUtils {
     }
 
     /**
+     * Copies bytes from input to output with a specified offset and length.
+     * Simplified method without custom buffer (uses default).
+     *
+     * @param input       the {@link InputStream} to read.
+     * @param output      the {@link OutputStream} to write.
+     * @param inputOffset number of bytes to skip from input.
+     * @param length      number of bytes to copy.
+     * @return the number of bytes copied.
+     * @throws IOException if an I/O error occurs.
+     * @since 2.2
+     */
+    public static long copyLargeWithOffset(final InputStream input, final OutputStream output, final long inputOffset, final long length) throws IOException {
+        try (ScratchBytes scratch = ScratchBytes.get()) {
+            return copyLarge(input, output, inputOffset, length, scratch.array());
+        }
+    }
+
+    /**
      * Copies some or all bytes from a large (over 2GB) {@link InputStream} to an {@link OutputStream}, optionally skipping input bytes.
      * <p>
      * This method uses the provided buffer, so there is no need to use a {@link BufferedInputStream}.

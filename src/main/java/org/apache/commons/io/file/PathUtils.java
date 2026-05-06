@@ -818,6 +818,23 @@ public final class PathUtils {
      * @throws IOException          if an I/O error occurs.
      * @see org.apache.commons.io.FileUtils#contentEquals(java.io.File, java.io.File)
      */
+    public static boolean fileContentEqualsWithDefaults(final Path path1, final Path path2) throws IOException {
+        return fileContentEquals(path1, path2, EMPTY_LINK_OPTION_ARRAY, EMPTY_OPEN_OPTION_ARRAY);
+    }
+
+    /**
+     * Compares the file contents of two Paths to determine if they are equal or not.
+     * <p>
+     * File content is accessed through {@link Files#newInputStream(Path,OpenOption...)}.
+     * </p>
+     *
+     * @param path1 the first file path.
+     * @param path2 the second file path.
+     * @return true if the content of the streams are equal or they both don't exist, false otherwise.
+     * @throws NullPointerException if either input is null.
+     * @throws IOException          if an I/O error occurs.
+     * @see org.apache.commons.io.FileUtils#contentEquals(java.io.File, java.io.File)
+     */
     public static boolean fileContentEquals(final Path path1, final Path path2) throws IOException {
         return fileContentEquals(path1, path2, EMPTY_LINK_OPTION_ARRAY, EMPTY_OPEN_OPTION_ARRAY);
     }
@@ -2004,6 +2021,34 @@ public final class PathUtils {
                 Files.setPosixFilePermissions(path, posixFileAttributes.permissions());
             }
         }
+    }
+
+    /**
+     * Writes the given character sequence to a file, replacing its contents.
+     * Descriptive wrapper that clearly indicates existing content is replaced.
+     *
+     * @param path          The target file.
+     * @param charSequence  The character sequence text.
+     * @param charset       The Charset to encode the text.
+     * @return The given path.
+     * @throws IOException if an I/O error occurs writing to or creating the file.
+     */
+    public static Path writeStringReplacingContent(final Path path, final CharSequence charSequence, final Charset charset) throws IOException {
+        return writeString(path, charSequence, charset, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+    /**
+     * Appends the given character sequence to a file.
+     * Descriptive wrapper that clearly indicates content is appended.
+     *
+     * @param path          The target file.
+     * @param charSequence  The character sequence text.
+     * @param charset       The Charset to encode the text.
+     * @return The given path.
+     * @throws IOException if an I/O error occurs writing to or creating the file.
+     */
+    public static Path appendStringToFile(final Path path, final CharSequence charSequence, final Charset charset) throws IOException {
+        return writeString(path, charSequence, charset, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     }
 
     /**

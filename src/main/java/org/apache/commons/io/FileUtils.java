@@ -3645,6 +3645,32 @@ public class FileUtils {
     }
 
     /**
+     * Writes lines to file, appending to existing content with custom line ending.
+     * Descriptive wrapper eliminating boolean append parameter.
+     *
+     * @param file the file to append to.
+     * @param lines the lines to write.
+     * @param lineEnding the line ending string.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void writeLinesAppending(final File file, final Collection<?> lines, final String lineEnding) throws IOException {
+        writeLines(file, lines, lineEnding, true);
+    }
+
+    /**
+     * Writes lines to file, replacing existing content with custom line ending.
+     * Descriptive wrapper eliminating boolean append parameter.
+     *
+     * @param file the file to write to.
+     * @param lines the lines to write.
+     * @param lineEnding the line ending string.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void writeLinesReplacing(final File file, final Collection<?> lines, final String lineEnding) throws IOException {
+        writeLines(file, lines, lineEnding, false);
+    }
+
+    /**
      * Writes the {@code toString()} value of each item in a collection to
      * the specified {@link File} line by line.
      * The specified character encoding and the default line ending will be used.

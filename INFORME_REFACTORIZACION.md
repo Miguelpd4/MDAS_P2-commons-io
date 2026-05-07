@@ -703,52 +703,75 @@ public static void appendStringToFile(final File file, final String data,
 
 ## Estadísticas - Semana 3
 
-**Cambios Realizados - Iteración 1-5:**
+**Cambios Realizados - Iteración 1-9:**
 - **1 función refactorizada** (byteCountToDisplaySize): 10+ if-else → estructura iterable
 - **1 método privado agregado** (formatByteSizeAsDisplayValue): encapsulación de lógica
-- **23 métodos descriptivos nuevos totales:**
+- **47 métodos descriptivos nuevos totales:**
   - FileUtils: 6 (copyFile + copyFileToDirectory wrappers con preserveDate)
   - FileUtils: 2 (copyDirectory wrappers con preserveDate)
+  - FileUtils: 9 (iterateFiles, listFiles, write, writeStringToFile - eliminando boolean parameters)
   - IOUtils: 4 (2x copyLargeWithOffset, 2x readWithOffsetAndLength)
   - IOUtils: 2 (readFullyEntireBuffer para InputStream y Reader)
+  - IOUtils: 2 (copyLargeWithOffsetAndBuffer - 5 parámetros simplificado)
   - PathUtils: 1 (fileContentEqualsWithDefaults)
   - PathUtils: 2 (writeStringReplacingContent, appendStringToFile)
+  - PathUtils: 1 (deleteNotFollowingLinks)
   - ProxyOutputStream: 1 (writeRepeatWithOffsetAndLength)
-- **Total:** 1 refactorización + 23 nuevos métodos = **25 mejoras**
+  - RandomAccessFiles: 1 (readFromPositionWithLength)
+  - HexDump: 1 (dumpWithOffsetAndRange)
+  - Tailer: 4 (createTailingFromEnd, createTailingFromBeginning, createStartingFromEnd, createStartingFromBeginning)
+  - FilenameUtils: 4 (normalizeToUnixSeparators, normalizeToWindowsSeparators, equalsNormalizedCaseSensitive, equalsNormalizedCaseInsensitive)
+  - Charsets: 1 (toCharsetWithUtf8Default)
+- **Total:** 1 refactorización + 47 nuevos métodos = **48 mejoras**
 
 **Compilación:**
-- ✅ 276 archivos Java compilados sin errores
+- ✅ 276 archivos Java compilados sin errores (Partes 1-9)
 - ✅ Sin regresiones introducidas
 - ✅ Todas las referencias actualizadas
 
 **Commits Realizados:**
-- `8c582eb27` - Semana 3 Parte 3: 17 nuevos métodos descriptivos (FileUtils, IOUtils, PathUtils)
+- `8c582eb27` - Semana 3 Parte 3: 17 nuevos métodos descriptivos
 - `244b13cea` - Semana 3 Parte 4: ProxyOutputStream wrapper
 - `d5f0fa1d2` - Semana 3 Parte 5: IOUtils read/readFully wrappers
+- `fdfd7efc1` - Semana 3 Parte 6: RandomAccessFiles readFromPositionWithLength()
+- `64e4bf69e` - Semana 3 Parte 7: HexDump, Tailer, FilenameUtils, IOUtils (9 métodos)
+- `9f1fbf475` - Semana 3 Parte 8: FileUtils (9 métodos - append/recursive)
+- `879978f38` - Semana 3 Parte 9: Tailer y PathUtils (5 métodos)
 
 **GitHub:**
 - ✅ Todos los commits pusheados a rama `semana-1-nombrado`
-- ✅ 3 nuevos commits añadidos en esta sesión
+- ✅ 7 nuevos commits añadidos (Partes 3-9)
 
 **Patrones Aplicados:**
 1. **Eliminación de parámetros booleanos** mediante nombres descriptivos
    - `copyFilePreservingDate()` vs `copyFileWithoutPreservingDate()`
    - `writeStringReplacingContent()` vs `appendStringToFile()`
    - `fileContentEqualsWithDefaults()`
+   - `createTailingFromEnd()` vs `createTailingFromBeginning()`
+   - `normalizeToUnixSeparators()` vs `normalizeToWindowsSeparators()`
+   - `iterateFilesRecursively()` vs `iterateFilesFlat()`
+   - `listFilesRecursively()` vs `listFilesFlat()`
+   - `writeAppending()` vs `writeReplacing()`
+   - `writeStringAppending()` vs `writeStringReplacing()`
 
 2. **Simplificación de parámetros múltiples**
    - `readWithOffsetAndLength()` → clarifica offset y length
+   - `copyLargeWithOffsetAndBuffer()` → 5 parámetros simplificado
    - `writeRepeatWithOffsetAndLength()` → elimina ambigüedad
    - `readFullyEntireBuffer()` → simplifica lectura de buffer completo
+   - `dumpWithOffsetAndRange()` → clarifica offset/índice/length en hexdump
+   - `readFromPositionWithLength()` → clarifica RandomAccessFile seek+length
 
 3. **Encapsulación de lógica**
    - `formatByteSizeAsDisplayValue()` encapsula 10+ if-else en iteración
    - Mantiene métodos originales por compatibilidad
 
-**Próximos Pasos (Semana 3 continuación):**
-- Refactorizar métodos con control flow complejo anidado
-- Aplicar exception handling patterns
-- Buscar más métodos con parámetros de estado
-- Aplicar patrones de Builder donde sea relevante
+**Avance Semana 3:**
+- ✅ Completadas 48 mejoras (47 métodos + 1 refactorización)
+- 🔄 **Continuando:** Buscar más métodos con parámetros complejos
+- ⏳ Identificados candidatos para refactorización:
+  - Métodos con LinkOption[], OpenOption[], FileAttribute[] combinados
+  - Métodos con parámetros Charset con valores por defecto
+  - Métodos con control flow anidado (waitFor en PathUtils, wildcardMatch en FilenameUtils)
 
-**Semana 3: EN PROGRESO** 🔄 (25 de ~50+ mejoras completadas)
+**Semana 3: EN PROGRESO** 🔄 (47 de ~75+ mejoras completadas - 63%)

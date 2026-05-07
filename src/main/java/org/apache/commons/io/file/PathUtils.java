@@ -533,6 +533,18 @@ public final class PathUtils {
     }
 
     /**
+     * Deletes a file or directory without following symbolic links.
+     * Descriptive wrapper clarifying link handling behavior.
+     *
+     * @param path the path to delete.
+     * @return deletion counters (files and directories deleted).
+     * @throws IOException if an I/O error occurs.
+     */
+    public static PathCounters deleteNotFollowingLinks(final Path path) throws IOException {
+        return delete(path, NOFOLLOW_LINK_OPTION_ARRAY);
+    }
+
+    /**
      * Deletes a file or directory. If the path is a directory, delete it and all subdirectories.
      * <p>
      * The difference between File.delete() and this method are:

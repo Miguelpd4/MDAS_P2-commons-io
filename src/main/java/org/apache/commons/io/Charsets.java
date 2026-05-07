@@ -259,6 +259,18 @@ public class Charsets {
     }
 
     /**
+     * Returns a Charset for the named charset, using UTF-8 as default if name is null.
+     * Descriptive wrapper for common case with UTF-8 fallback.
+     *
+     * @param charsetName the charset name, null returns UTF-8.
+     * @return Charset for the name or UTF-8.
+     * @throws UnsupportedCharsetException if the charset is unsupported.
+     */
+    public static Charset toCharsetWithUtf8Default(final String charsetName) throws UnsupportedCharsetException {
+        return toCharset(charsetName, StandardCharsets.UTF_8);
+    }
+
+    /**
      * Returns a Charset for the named charset. If the name is null, return the given default Charset.
      *
      * @param charsetName The name of the requested charset, may be null.

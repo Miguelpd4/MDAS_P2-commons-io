@@ -2215,6 +2215,30 @@ public class FileUtils {
     }
 
     /**
+     * Iterates over files in directory and all subdirectories with given extensions.
+     * Descriptive wrapper eliminating boolean recursive parameter.
+     *
+     * @param directory the directory to search recursively.
+     * @param extensions file extensions to match (e.g., "txt", "java").
+     * @return iterator over matching files in directory and subdirectories.
+     */
+    public static Iterator<File> iterateFilesRecursively(final File directory, final String[] extensions) {
+        return iterateFiles(directory, extensions, true);
+    }
+
+    /**
+     * Iterates over files in directory (not subdirectories) with given extensions.
+     * Descriptive wrapper eliminating boolean recursive parameter.
+     *
+     * @param directory the directory to search.
+     * @param extensions file extensions to match (e.g., "txt", "java").
+     * @return iterator over matching files in directory only.
+     */
+    public static Iterator<File> iterateFilesFlat(final File directory, final String[] extensions) {
+        return iterateFiles(directory, extensions, false);
+    }
+
+    /**
      * Iterates over the files in given directory (and optionally
      * its subdirectories).
      * <p>
@@ -2493,6 +2517,30 @@ public class FileUtils {
      */
     public static Collection<File> listFiles(final File directory, final String[] extensions, final boolean recursive) {
         return listFiles(directory, new ArrayList<>(), recursive, extensions != null ? toSuffixFileFilter(extensions) : TrueFileFilter.INSTANCE);
+    }
+
+    /**
+     * Lists files in directory and all subdirectories with given extensions.
+     * Descriptive wrapper eliminating boolean recursive parameter.
+     *
+     * @param directory the directory to search recursively.
+     * @param extensions file extensions to match (e.g., "txt", "java").
+     * @return collection of matching files in directory and subdirectories.
+     */
+    public static Collection<File> listFilesRecursively(final File directory, final String[] extensions) {
+        return listFiles(directory, extensions, true);
+    }
+
+    /**
+     * Lists files in directory (not subdirectories) with given extensions.
+     * Descriptive wrapper eliminating boolean recursive parameter.
+     *
+     * @param directory the directory to search.
+     * @param extensions file extensions to match (e.g., "txt", "java").
+     * @return collection of matching files in directory only.
+     */
+    public static Collection<File> listFilesFlat(final File directory, final String[] extensions) {
+        return listFiles(directory, extensions, false);
     }
 
     /**
@@ -3404,6 +3452,32 @@ public class FileUtils {
         write(file, data, Charsets.toCharset(charsetName), append);
     }
 
+    /**
+     * Writes CharSequence to file, appending to existing content.
+     * Descriptive wrapper eliminating boolean append parameter.
+     *
+     * @param file the file to append to.
+     * @param data the content to write.
+     * @param charsetName the charset name.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void writeAppending(final File file, final CharSequence data, final String charsetName) throws IOException {
+        write(file, data, charsetName, true);
+    }
+
+    /**
+     * Writes CharSequence to file, replacing existing content.
+     * Descriptive wrapper eliminating boolean append parameter.
+     *
+     * @param file the file to write to.
+     * @param data the content to write.
+     * @param charsetName the charset name.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void writeReplacing(final File file, final CharSequence data, final String charsetName) throws IOException {
+        write(file, data, charsetName, false);
+    }
+
     // Must be called with a directory
 
     /**
@@ -3671,6 +3745,30 @@ public class FileUtils {
     @Deprecated
     public static void writeStringToFile(final File file, final String data, final boolean append) throws IOException {
         writeStringToFile(file, data, Charset.defaultCharset(), append);
+    }
+
+    /**
+     * Writes String to file, appending to existing content with default charset.
+     * Descriptive wrapper eliminating boolean append parameter.
+     *
+     * @param file the file to append to.
+     * @param data the string to write.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void writeStringAppending(final File file, final String data) throws IOException {
+        writeStringToFile(file, data, true);
+    }
+
+    /**
+     * Writes String to file, replacing existing content with default charset.
+     * Descriptive wrapper eliminating boolean append parameter.
+     *
+     * @param file the file to write to.
+     * @param data the string to write.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void writeStringReplacing(final File file, final String data) throws IOException {
+        writeStringToFile(file, data, false);
     }
 
     /**

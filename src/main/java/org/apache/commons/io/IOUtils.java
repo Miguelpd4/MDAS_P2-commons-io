@@ -3177,6 +3177,19 @@ public class IOUtils {
     }
 
     /**
+     * Gets the contents of a Reader as a {@code byte[]} using UTF-8.
+     * Descriptive wrapper for common case with UTF-8 encoding.
+     *
+     * @param reader the Reader to convert.
+     * @return the requested byte array.
+     * @throws NullPointerException if the reader is null.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static byte[] toByteArrayUsingUtf8(final Reader reader) throws IOException {
+        return toByteArray(reader, StandardCharsets.UTF_8);
+    }
+
+    /**
      * Gets the contents of a {@link String} as a {@code byte[]} using the virtual machine's {@linkplain Charset#defaultCharset() default charset}.
      * <p>
      * This is the same as {@link String#getBytes()}.
@@ -3498,6 +3511,19 @@ public class IOUtils {
         return toString(input, charset, () -> {
             throw new NullPointerException("input");
         });
+    }
+
+    /**
+     * Gets the contents of an InputStream from a supplier as a String using UTF-8.
+     * Descriptive wrapper for common case with UTF-8 encoding.
+     *
+     * @param input supplies the InputStream to read.
+     * @return the requested String decoded as UTF-8.
+     * @throws NullPointerException if the input is null.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static String toStringUsingUtf8(final IOSupplier<InputStream> input) throws IOException {
+        return toString(input, StandardCharsets.UTF_8);
     }
 
     /**

@@ -2398,6 +2398,18 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Opens a file as a LineIterator using UTF-8.
+     * Descriptive wrapper for common case with UTF-8 encoding.
+     *
+     * @param file the file to iterate lines from.
+     * @return a line iterator.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static LineIterator lineIteratorUsingUtf8(final File file) throws IOException {
+        return lineIterator(file, StandardCharsets.UTF_8.name());
+    }
+
     private static AccumulatorPathVisitor listAccumulate(final File directory, final IOFileFilter fileFilter, final IOFileFilter dirFilter,
             final FileVisitOption... options) throws IOException {
         final boolean isDirFilterSet = dirFilter != null;
@@ -2655,6 +2667,31 @@ public class FileUtils {
     }
 
     /**
+     * Moves directory to destination directory, creating destination if needed.
+     * Descriptive wrapper eliminating boolean createDestDir parameter.
+     *
+     * @param source the directory to move.
+     * @param destDir the destination directory (will be created if missing).
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void moveDirectoryCreatingDestIfNeeded(final File source, final File destDir) throws IOException {
+        moveDirectoryToDirectory(source, destDir, true);
+    }
+
+    /**
+     * Moves directory to destination directory without creating destination.
+     * Descriptive wrapper eliminating boolean createDestDir parameter.
+     *
+     * @param source the directory to move.
+     * @param destDir the destination directory (must exist).
+     * @throws FileNotFoundException if destination does not exist.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void moveDirectoryToExistingDirectory(final File source, final File destDir) throws IOException {
+        moveDirectoryToDirectory(source, destDir, false);
+    }
+
+    /**
      * Moves a file preserving attributes.
      * <p>
      * Shorthand for {@code moveFile(srcFile, destFile, StandardCopyOption.COPY_ATTRIBUTES)}.
@@ -2737,6 +2774,31 @@ public class FileUtils {
     }
 
     /**
+     * Moves file to destination directory, creating destination if needed.
+     * Descriptive wrapper eliminating boolean createDestDir parameter.
+     *
+     * @param srcFile the file to move.
+     * @param destDir the destination directory (will be created if missing).
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void moveFileCreatingDestIfNeeded(final File srcFile, final File destDir) throws IOException {
+        moveFileToDirectory(srcFile, destDir, true);
+    }
+
+    /**
+     * Moves file to destination directory without creating destination.
+     * Descriptive wrapper eliminating boolean createDestDir parameter.
+     *
+     * @param srcFile the file to move.
+     * @param destDir the destination directory (must exist).
+     * @throws FileNotFoundException if destination does not exist.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void moveFileToExistingDirectory(final File srcFile, final File destDir) throws IOException {
+        moveFileToDirectory(srcFile, destDir, false);
+    }
+
+    /**
      * Moves a file or directory into a destination directory.
      * <p>
      * If {@code createDestDir} is true, creates all destination parent directories, including any necessary but non-existent parent directories.
@@ -2763,6 +2825,31 @@ public class FileUtils {
         } else {
             moveFileToDirectory(src, destDir, createDestDir);
         }
+    }
+
+    /**
+     * Moves file or directory to destination, creating destination if needed.
+     * Descriptive wrapper eliminating boolean createDestDir parameter.
+     *
+     * @param src the file or directory to move.
+     * @param destDir the destination directory (will be created if missing).
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void moveCreatingDestIfNeeded(final File src, final File destDir) throws IOException {
+        moveToDirectory(src, destDir, true);
+    }
+
+    /**
+     * Moves file or directory to existing destination without creating directory.
+     * Descriptive wrapper eliminating boolean createDestDir parameter.
+     *
+     * @param src the file or directory to move.
+     * @param destDir the destination directory (must exist).
+     * @throws FileNotFoundException if destination does not exist.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void moveToExistingDirectory(final File src, final File destDir) throws IOException {
+        moveToDirectory(src, destDir, false);
     }
 
     /**
@@ -2928,6 +3015,19 @@ public class FileUtils {
      */
     public static String readFileToString(final File file, final String charsetName) throws IOException {
         return readFileToString(file, Charsets.toCharset(charsetName));
+    }
+
+    /**
+     * Reads the contents of a file into a String using UTF-8.
+     * Descriptive wrapper for common case with UTF-8 encoding.
+     *
+     * @param file the file to read, must not be {@code null}.
+     * @return the file contents, never {@code null}.
+     * @throws NullPointerException if file is {@code null}.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static String readFileToStringUsingUtf8(final File file) throws IOException {
+        return readFileToString(file, StandardCharsets.UTF_8);
     }
 
     /**

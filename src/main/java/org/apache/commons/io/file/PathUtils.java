@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
@@ -501,6 +502,19 @@ public final class PathUtils {
         }
         final boolean exists = linkOption == null ? Files.exists(parent) : Files.exists(parent, linkOption);
         return exists ? parent : Files.createDirectories(parent, attrs);
+    }
+
+    /**
+     * Creates all parent directories of a path, not following symbolic links.
+     * Descriptive wrapper clarifying link handling behavior.
+     *
+     * @param path the path whose parents to create.
+     * @param attrs file attributes to apply.
+     * @return the parent path, or null if path has no parent.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static Path createParentDirectoriesNoFollowLinks(final Path path, final FileAttribute<?>... attrs) throws IOException {
+        return createParentDirectories(path, LinkOption.NOFOLLOW_LINKS, attrs);
     }
 
     /**
@@ -1586,6 +1600,18 @@ public final class PathUtils {
     }
 
     /**
+     * Reads a file path's content as a String using UTF-8.
+     * Descriptive wrapper for common case with UTF-8 encoding.
+     *
+     * @param path the file path to read.
+     * @return the file contents as a String decoded with UTF-8.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static String readStringUsingUtf8(final Path path) throws IOException {
+        return readString(path, StandardCharsets.UTF_8);
+    }
+
+    /**
      * Relativizes all files in the given {@code collection} against a {@code parent}.
      *
      * @param collection The collection of paths to relativize.
@@ -2000,6 +2026,30 @@ public final class PathUtils {
     }
 
     /**
+     * Waits for a file to exist, following symbolic links.
+     * Descriptive wrapper clarifying link-following behavior.
+     *
+     * @param file the file path to wait for.
+     * @param timeout the maximum time to wait.
+     * @return true if the file exists after waiting, false if timeout occurred.
+     */
+    public static boolean waitForFollowingLinks(final Path file, final Duration timeout) {
+        return waitFor(file, timeout);
+    }
+
+    /**
+     * Waits for a file to exist, not following symbolic links.
+     * Descriptive wrapper clarifying link-following behavior.
+     *
+     * @param file the file path to wait for.
+     * @param timeout the maximum time to wait.
+     * @return true if the file exists after waiting, false if timeout occurred.
+     */
+    public static boolean waitForNotFollowingLinks(final Path file, final Duration timeout) {
+        return waitFor(file, timeout, LinkOption.NOFOLLOW_LINKS);
+    }
+
+    /**
      * Returns a stream of filtered paths.
      * <p>
      * The returned {@link Stream} may wrap one or more {@link DirectoryStream}s. When you require timely disposal of file system resources, use a
@@ -2021,6 +2071,38 @@ public final class PathUtils {
             final FileVisitOption... options) throws IOException {
         return Files.walk(start, maxDepth, options).filter(
                 path -> pathFilter.accept(path, readAttributes ? readBasicFileAttributes(path, EMPTY_LINK_OPTION_ARRAY) : null) == FileVisitResult.CONTINUE);
+    }
+
+    /**
+     * Returns a stream of filtered paths with file attributes loaded.
+     * Descriptive wrapper clarifying attributes are provided to filter.
+     *
+     * @param start      the start path.
+     * @param pathFilter the path filter.
+     * @param maxDepth   the maximum depth of directories to walk.
+     * @param options    the options to configure the walk.
+     * @return a filtered stream of paths with attributes.
+     * @throws IOException if an I/O error is thrown when accessing the starting file.
+     */
+    public static Stream<Path> walkWithAttributes(final Path start, final PathFilter pathFilter, final int maxDepth,
+            final FileVisitOption... options) throws IOException {
+        return walk(start, pathFilter, maxDepth, true, options);
+    }
+
+    /**
+     * Returns a stream of filtered paths without loading file attributes.
+     * Descriptive wrapper clarifying attributes are not loaded.
+     *
+     * @param start      the start path.
+     * @param pathFilter the path filter.
+     * @param maxDepth   the maximum depth of directories to walk.
+     * @param options    the options to configure the walk.
+     * @return a filtered stream of paths without attributes.
+     * @throws IOException if an I/O error is thrown when accessing the starting file.
+     */
+    public static Stream<Path> walkWithoutAttributes(final Path start, final PathFilter pathFilter, final int maxDepth,
+            final FileVisitOption... options) throws IOException {
+        return walk(start, pathFilter, maxDepth, false, options);
     }
 
     private static <R> R withPosixFileAttributes(final Path path, final LinkOption[] linkOptions, final boolean overrideReadOnly,
@@ -2082,6 +2164,21 @@ public final class PathUtils {
         Objects.requireNonNull(charSequence, "charSequence");
         Files.write(path, String.valueOf(charSequence).getBytes(Charsets.toCharset(charset)), openOptions);
         return path;
+    }
+
+    /**
+     * Writes a character sequence to a file using UTF-8.
+     * Descriptive wrapper for common case with UTF-8 encoding.
+     *
+     * @param path           the target file.
+     * @param charSequence   the character sequence to write.
+     * @param openOptions    options specifying how the file should be opened.
+     * @return the path.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static Path writeStringUsingUtf8(final Path path, final CharSequence charSequence, final OpenOption... openOptions)
+            throws IOException {
+        return writeString(path, charSequence, StandardCharsets.UTF_8, openOptions);
     }
 
     /**

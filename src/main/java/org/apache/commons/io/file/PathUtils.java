@@ -604,6 +604,19 @@ public final class PathUtils {
     }
 
     /**
+     * Deletes a file or directory not following symbolic links.
+     * Descriptive wrapper clarifying link-following behavior.
+     *
+     * @param path the path to delete.
+     * @param deleteOptions options specifying how deletion should proceed.
+     * @return a counter for the number of files and directories deleted.
+     * @throws IOException if an I/O error is thrown.
+     */
+    public static PathCounters deleteNotFollowingLinks(final Path path, final DeleteOption... deleteOptions) throws IOException {
+        return delete(path, NOFOLLOW_LINK_OPTION_ARRAY, deleteOptions);
+    }
+
+    /**
      * Deletes a directory including subdirectories.
      *
      * @param directory directory to delete.

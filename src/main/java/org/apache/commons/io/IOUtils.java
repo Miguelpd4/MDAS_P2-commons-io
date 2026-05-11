@@ -1465,6 +1465,19 @@ public class IOUtils {
     }
 
     /**
+     * Copies bytes from an InputStream to characters on a Writer using UTF-8.
+     * Descriptive wrapper for common case with UTF-8 encoding.
+     *
+     * @param input  the InputStream to read.
+     * @param writer the Writer to write to.
+     * @throws NullPointerException if the input or writer is null.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void copyUsingUtf8(final InputStream input, final Writer writer) throws IOException {
+        copy(input, writer, StandardCharsets.UTF_8);
+    }
+
+    /**
      * Copies bytes from a {@link ByteArrayOutputStream} to a {@link QueueInputStream}.
      * <p>
      * Unlike using JDK {@link PipedInputStream} and {@link PipedOutputStream} for this, this solution works safely in a single thread environment.
@@ -1616,6 +1629,19 @@ public class IOUtils {
      */
     public static void copy(final Reader reader, final OutputStream output, final String outputCharsetName) throws IOException {
         copy(reader, output, Charsets.toCharset(outputCharsetName));
+    }
+
+    /**
+     * Copies characters from a Reader to an OutputStream using UTF-8.
+     * Descriptive wrapper for common case with UTF-8 encoding.
+     *
+     * @param reader the Reader to read.
+     * @param output the OutputStream to write to.
+     * @throws NullPointerException if the reader or output is null.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void copyUsingUtf8(final Reader reader, final OutputStream output) throws IOException {
+        copy(reader, output, StandardCharsets.UTF_8);
     }
 
     /**

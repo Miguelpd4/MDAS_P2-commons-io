@@ -26,6 +26,7 @@ import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore;
@@ -451,6 +452,19 @@ public final class FilesUncheck {
     }
 
     /**
+     * Creates a new BufferedWriter for a path using UTF-8 encoding.
+     * Descriptive wrapper for common case with UTF-8 charset.
+     *
+     * @param path the path to open.
+     * @param options options specifying how the file should be opened.
+     * @return a new BufferedWriter with UTF-8 encoding.
+     * @throws UncheckedIOException wraps an IOException.
+     */
+    public static BufferedWriter newBufferedWriterUtf8(final Path path, final OpenOption... options) {
+        return newBufferedWriter(path, StandardCharsets.UTF_8, options);
+    }
+
+    /**
      * Delegates to {@link Files#newBufferedWriter(Path, OpenOption...)} throwing {@link UncheckedIOException} instead of
      * {@link IOException}.
      *
@@ -785,6 +799,20 @@ public final class FilesUncheck {
      */
     public static Path write(final Path path, final Iterable<? extends CharSequence> lines, final Charset cs, final OpenOption... options) {
         return Uncheck.apply(Files::write, path, lines, cs, options);
+    }
+
+    /**
+     * Writes lines to a file using UTF-8 encoding, throwing UncheckedIOException.
+     * Descriptive wrapper for common case with UTF-8 charset.
+     *
+     * @param path the path to write to.
+     * @param lines the lines to write.
+     * @param options options specifying how the file should be opened.
+     * @return the path.
+     * @throws UncheckedIOException wraps an IOException.
+     */
+    public static Path writeUtf8(final Path path, final Iterable<? extends CharSequence> lines, final OpenOption... options) {
+        return write(path, lines, StandardCharsets.UTF_8, options);
     }
 
     /**

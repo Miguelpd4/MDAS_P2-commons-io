@@ -78,6 +78,30 @@ public class FileFilterUtils {
     }
 
     /**
+     * Returns a filter that accepts files older than the cutoff date.
+     * Descriptive wrapper eliminating boolean acceptOlder parameter.
+     *
+     * @param cutoffDate  the cutoff date threshold.
+     * @return a filter that accepts files older than cutoffDate.
+     * @see AgeFileFilter
+     */
+    public static IOFileFilter ageFileFilterAcceptingOlder(final Date cutoffDate) {
+        return ageFileFilter(cutoffDate, true);
+    }
+
+    /**
+     * Returns a filter that accepts files newer than the cutoff date.
+     * Descriptive wrapper eliminating boolean acceptOlder parameter.
+     *
+     * @param cutoffDate  the cutoff date threshold.
+     * @return a filter that accepts files newer than cutoffDate.
+     * @see AgeFileFilter
+     */
+    public static IOFileFilter ageFileFilterAcceptingNewer(final Date cutoffDate) {
+        return ageFileFilter(cutoffDate, false);
+    }
+
+    /**
      * Returns a filter that returns true if the file was last modified before
      * or at the same time as the specified reference file.
      *
@@ -106,6 +130,30 @@ public class FileFilterUtils {
     }
 
     /**
+     * Returns a filter that accepts files older than the reference file.
+     * Descriptive wrapper eliminating boolean acceptOlder parameter.
+     *
+     * @param cutoffReference  the reference file whose modification time is used as threshold.
+     * @return a filter that accepts files older than cutoffReference.
+     * @see AgeFileFilter
+     */
+    public static IOFileFilter ageFileFilterAcceptingOlder(final File cutoffReference) {
+        return ageFileFilter(cutoffReference, true);
+    }
+
+    /**
+     * Returns a filter that accepts files newer than the reference file.
+     * Descriptive wrapper eliminating boolean acceptOlder parameter.
+     *
+     * @param cutoffReference  the reference file whose modification time is used as threshold.
+     * @return a filter that accepts files newer than cutoffReference.
+     * @see AgeFileFilter
+     */
+    public static IOFileFilter ageFileFilterAcceptingNewer(final File cutoffReference) {
+        return ageFileFilter(cutoffReference, false);
+    }
+
+    /**
      * Returns a filter that returns true if the file was last modified before
      * or at the specified cutoff time.
      *
@@ -129,6 +177,30 @@ public class FileFilterUtils {
      */
     public static IOFileFilter ageFileFilter(final long cutoffMillis, final boolean acceptOlder) {
         return new AgeFileFilter(cutoffMillis, acceptOlder);
+    }
+
+    /**
+     * Returns a filter that accepts files older than the cutoff time.
+     * Descriptive wrapper eliminating boolean acceptOlder parameter.
+     *
+     * @param cutoffMillis  the cutoff time in milliseconds.
+     * @return a filter that accepts files older than cutoffMillis.
+     * @see AgeFileFilter
+     */
+    public static IOFileFilter ageFileFilterAcceptingOlder(final long cutoffMillis) {
+        return ageFileFilter(cutoffMillis, true);
+    }
+
+    /**
+     * Returns a filter that accepts files newer than the cutoff time.
+     * Descriptive wrapper eliminating boolean acceptOlder parameter.
+     *
+     * @param cutoffMillis  the cutoff time in milliseconds.
+     * @return a filter that accepts files newer than cutoffMillis.
+     * @see AgeFileFilter
+     */
+    public static IOFileFilter ageFileFilterAcceptingNewer(final long cutoffMillis) {
+        return ageFileFilter(cutoffMillis, false);
     }
 
     /**
@@ -661,6 +733,30 @@ public class FileFilterUtils {
      */
     public static IOFileFilter sizeFileFilter(final long threshold, final boolean acceptLarger) {
         return new SizeFileFilter(threshold, acceptLarger);
+    }
+
+    /**
+     * Returns a filter that accepts files larger than the threshold size.
+     * Descriptive wrapper eliminating boolean acceptLarger parameter.
+     *
+     * @param threshold  the file size threshold.
+     * @return a filter that accepts files larger than threshold.
+     * @see SizeFileFilter
+     */
+    public static IOFileFilter sizeFileFilterAcceptingLarger(final long threshold) {
+        return sizeFileFilter(threshold, true);
+    }
+
+    /**
+     * Returns a filter that accepts files smaller than the threshold size.
+     * Descriptive wrapper eliminating boolean acceptLarger parameter.
+     *
+     * @param threshold  the file size threshold.
+     * @return a filter that accepts files smaller than threshold.
+     * @see SizeFileFilter
+     */
+    public static IOFileFilter sizeFileFilterAcceptingSmaller(final long threshold) {
+        return sizeFileFilter(threshold, false);
     }
 
     /**

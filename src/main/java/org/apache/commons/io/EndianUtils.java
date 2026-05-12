@@ -76,6 +76,18 @@ public class EndianUtils {
     }
 
     /**
+     * Reads a little-endian {@code double} value from byte array starting at offset 0.
+     * Descriptive wrapper assuming offset is zero.
+     *
+     * @param data source byte array.
+     * @return the value just read.
+     * @throws IllegalArgumentException if the byte array has fewer than 8 bytes.
+     */
+    public static double readSwappedDoubleFromStart(final byte[] data) {
+        return readSwappedDouble(data, 0);
+    }
+
+    /**
      * Reads a little-endian {@code double} value from an InputStream.
      *
      * @param input source InputStream.
@@ -96,6 +108,18 @@ public class EndianUtils {
      */
     public static float readSwappedFloat(final byte[] data, final int offset) {
         return Float.intBitsToFloat(readSwappedInteger(data, offset));
+    }
+
+    /**
+     * Reads a little-endian {@code float} value from byte array starting at offset 0.
+     * Descriptive wrapper assuming offset is zero.
+     *
+     * @param data source byte array.
+     * @return the value just read.
+     * @throws IllegalArgumentException if the byte array has fewer than 4 bytes.
+     */
+    public static float readSwappedFloatFromStart(final byte[] data) {
+        return readSwappedFloat(data, 0);
     }
 
     /**
@@ -124,6 +148,18 @@ public class EndianUtils {
             ((data[offset + 1] & 0xff) << 8) +
             ((data[offset + 2] & 0xff) << 16) +
             ((data[offset + 3] & 0xff) << 24);
+    }
+
+    /**
+     * Reads a little-endian {@code int} value from byte array starting at offset 0.
+     * Descriptive wrapper assuming offset is zero.
+     *
+     * @param data source byte array.
+     * @return the value just read.
+     * @throws IllegalArgumentException if the byte array has fewer than 4 bytes.
+     */
+    public static int readSwappedIntegerFromStart(final byte[] data) {
+        return readSwappedInteger(data, 0);
     }
 
     /**
@@ -161,6 +197,18 @@ public class EndianUtils {
     }
 
     /**
+     * Reads a little-endian {@code long} value from byte array starting at offset 0.
+     * Descriptive wrapper assuming offset is zero.
+     *
+     * @param data source byte array.
+     * @return the value just read.
+     * @throws IllegalArgumentException if the byte array has fewer than 8 bytes.
+     */
+    public static long readSwappedLongFromStart(final byte[] data) {
+        return readSwappedLong(data, 0);
+    }
+
+    /**
      * Reads a little-endian {@code long} value from an InputStream.
      *
      * @param input source InputStream.
@@ -189,6 +237,18 @@ public class EndianUtils {
             ((data[offset + 0] & 0xff) << 0) +
             ((data[offset + 1] & 0xff) << 8)
         );
+    }
+
+    /**
+     * Reads a little-endian {@code short} value from byte array starting at offset 0.
+     * Descriptive wrapper assuming offset is zero.
+     *
+     * @param data source byte array.
+     * @return the value just read.
+     * @throws IllegalArgumentException if the byte array has fewer than 2 bytes.
+     */
+    public static short readSwappedShortFromStart(final byte[] data) {
+        return readSwappedShort(data, 0);
     }
 
     /**

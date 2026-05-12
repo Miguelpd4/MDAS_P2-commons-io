@@ -161,6 +161,45 @@ public final class FileChannels {
     }
 
     /**
+     * Tests if two file channel contents are equal using default buffer capacity of 8192 bytes.
+     * Descriptive wrapper with default buffer size.
+     *
+     * @param channel1 A file channel.
+     * @param channel2 Another file channel.
+     * @return true if the contents of both channels are equal, false otherwise.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static boolean contentEqualsWithDefaultBuffer(final FileChannel channel1, final FileChannel channel2) throws IOException {
+        return contentEquals(channel1, channel2, 8192);
+    }
+
+    /**
+     * Tests if two readable byte channel contents are equal using default buffer capacity of 8192 bytes.
+     * Descriptive wrapper with default buffer size.
+     *
+     * @param channel1 A readable byte channel.
+     * @param channel2 Another readable byte channel.
+     * @return true if the contents of both channels are equal, false otherwise.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static boolean contentEqualsWithDefaultBuffer(final ReadableByteChannel channel1, final ReadableByteChannel channel2) throws IOException {
+        return contentEquals(channel1, channel2, 8192);
+    }
+
+    /**
+     * Tests if two seekable byte channel contents are equal using default buffer capacity of 8192 bytes.
+     * Descriptive wrapper with default buffer size.
+     *
+     * @param channel1 A seekable byte channel.
+     * @param channel2 Another seekable byte channel.
+     * @return true if the contents of both channels are equal, false otherwise.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static boolean contentEqualsWithDefaultBuffer(final SeekableByteChannel channel1, final SeekableByteChannel channel2) throws IOException {
+        return contentEquals(channel1, channel2, 8192);
+    }
+
+    /**
      * Don't instantiate.
      */
     private FileChannels() {

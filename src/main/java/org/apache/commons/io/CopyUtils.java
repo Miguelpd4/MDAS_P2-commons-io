@@ -28,6 +28,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils.ScratchChars;
 
@@ -348,6 +349,30 @@ public class CopyUtils {
     public static void copy(final String input, final Writer output)
                 throws IOException {
         output.write(input);
+    }
+
+    /**
+     * Copies bytes from a {@code byte[]} to chars on a {@link Writer} using UTF-8 encoding.
+     * Descriptive wrapper with UTF-8 encoding default.
+     *
+     * @param input the byte array to read from.
+     * @param output the {@link Writer} to write to.
+     * @throws IOException In case of an I/O problem.
+     */
+    public static void copyUsingUtf8(final byte[] input, final Writer output) throws IOException {
+        copy(input, output, StandardCharsets.UTF_8.name());
+    }
+
+    /**
+     * Copies bytes from an {@link InputStream} to chars on a {@link Writer} using UTF-8 encoding.
+     * Descriptive wrapper with UTF-8 encoding default.
+     *
+     * @param input the {@link InputStream} to read from.
+     * @param output the {@link Writer} to write to.
+     * @throws IOException In case of an I/O problem.
+     */
+    public static void copyUsingUtf8(final InputStream input, final Writer output) throws IOException {
+        copy(input, output, StandardCharsets.UTF_8.name());
     }
 
     /**

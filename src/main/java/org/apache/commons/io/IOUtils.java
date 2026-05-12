@@ -2149,6 +2149,18 @@ public class IOUtils {
     }
 
     /**
+     * Returns an Iterator for the lines in an InputStream using UTF-8 encoding.
+     * Descriptive wrapper for common case with UTF-8 encoding.
+     *
+     * @param input the InputStream to read, not null.
+     * @return an Iterator of the lines, never null.
+     * @throws IllegalArgumentException if the input is null.
+     */
+    public static LineIterator lineIteratorUsingUtf8(final InputStream input) {
+        return lineIterator(input, StandardCharsets.UTF_8);
+    }
+
+    /**
      * Returns an Iterator for the lines in a {@link Reader}.
      * <p>
      * {@link LineIterator} holds a reference to the open {@link Reader} specified here. When you have finished with the iterator you should close the reader to
@@ -2766,6 +2778,20 @@ public class IOUtils {
     }
 
     /**
+     * Skips bytes from an InputStream using a default buffer.
+     * Descriptive wrapper using standard buffer size for skipping.
+     *
+     * @param input the InputStream to skip.
+     * @param skip  the number of bytes to skip.
+     * @return the number of bytes actually skipped.
+     * @throws IOException              if an I/O error occurs.
+     * @throws IllegalArgumentException if skip is negative.
+     */
+    public static long skipUsingDefaultBuffer(final InputStream input, final long skip) throws IOException {
+        return skip(input, skip, () -> new byte[DEFAULT_BUFFER_SIZE]);
+    }
+
+    /**
      * Skips bytes from a ReadableByteChannel. This implementation guarantees that it will read as many bytes as possible before giving up.
      *
      * @param input  ReadableByteChannel to skip.
@@ -2886,6 +2912,20 @@ public class IOUtils {
         if (skipped != toSkip) {
             throw new EOFException("Bytes to skip: " + toSkip + " actual: " + skipped);
         }
+    }
+
+    /**
+     * Skips the requested number of bytes or fails using a default buffer.
+     * Descriptive wrapper using standard buffer size.
+     *
+     * @param input  the InputStream to skip.
+     * @param toSkip the number of bytes to skip.
+     * @throws IOException              if an I/O error occurs.
+     * @throws IllegalArgumentException if toSkip is negative.
+     * @throws EOFException             if the number of bytes skipped was incorrect.
+     */
+    public static void skipFullyUsingDefaultBuffer(final InputStream input, final long toSkip) throws IOException {
+        skipFully(input, toSkip, () -> new byte[DEFAULT_BUFFER_SIZE]);
     }
 
     /**

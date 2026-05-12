@@ -3632,6 +3632,30 @@ public class FileUtils {
     }
 
     /**
+     * Writes a byte array to a file, appending to existing content.
+     * Descriptive wrapper clarifying that existing content is preserved.
+     *
+     * @param file the file to write to.
+     * @param data the bytes to write.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void writeByteArrayToFileAppending(final File file, final byte[] data) throws IOException {
+        writeByteArrayToFile(file, data, true);
+    }
+
+    /**
+     * Writes a byte array to a file, replacing existing content.
+     * Descriptive wrapper clarifying that existing content is replaced.
+     *
+     * @param file the file to write to.
+     * @param data the bytes to write.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void writeByteArrayToFileReplacing(final File file, final byte[] data) throws IOException {
+        writeByteArrayToFile(file, data, false);
+    }
+
+    /**
      * Writes {@code len} bytes from the specified byte array starting
      * at offset {@code off} to a file, creating the file if it does
      * not exist. Replaces existing file content.
@@ -3680,6 +3704,34 @@ public class FileUtils {
         try (OutputStream out = newOutputStream(file, append)) {
             out.write(data, off, len);
         }
+    }
+
+    /**
+     * Writes bytes from a byte array with offset and length, appending to existing file.
+     * Descriptive wrapper clarifying that existing content is preserved.
+     *
+     * @param file the file to write to.
+     * @param data the byte array to write.
+     * @param off the offset into the array.
+     * @param len the number of bytes to write.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void writeByteArrayToFileAppending(final File file, final byte[] data, final int off, final int len) throws IOException {
+        writeByteArrayToFile(file, data, off, len, true);
+    }
+
+    /**
+     * Writes bytes from a byte array with offset and length, replacing existing file content.
+     * Descriptive wrapper clarifying that existing content is replaced.
+     *
+     * @param file the file to write to.
+     * @param data the byte array to write.
+     * @param off the offset into the array.
+     * @param len the number of bytes to write.
+     * @throws IOException if an I/O error occurs.
+     */
+    public static void writeByteArrayToFileReplacing(final File file, final byte[] data, final int off, final int len) throws IOException {
+        writeByteArrayToFile(file, data, off, len, false);
     }
 
     /**

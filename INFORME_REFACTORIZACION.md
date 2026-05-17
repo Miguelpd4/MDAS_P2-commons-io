@@ -949,3 +949,307 @@ public static void appendStringToFile(final File file, final String data,
 **ESTADO GENERAL:** ✅ EXITOSO - 283+ cambios, 0 errores
 
 **Semana 3: ✅ COMPLETADA** 🎉
+
+---
+
+# 📋 REFACTORIZACIÓN SEMANA 4 - Técnicas Avanzadas de Refactoring.Guru
+
+## Plan Estratégico - Semana 4
+
+Basado en el catálogo de **refactoring.guru**, aplicaremos técnicas avanzadas enfocadas en:
+
+### 🎯 Técnicas Principales (6 Categorías)
+
+#### 1. **Composing Methods** (Composición de Métodos) ⭐ ALTA PRIORIDAD
+**Objetivo:** Mejorar métodos largos y complejos
+
+Técnicas a aplicar:
+- **Extract Method** - Extraer lógica compleja en métodos privados (ya hemos hecho algo de esto)
+  - Candidatos: Métodos >50 líneas con múltiples responsabilidades
+- **Replace Temp with Query** - Reemplazar variables temporales con métodos
+  - Candidatos: `FileUtils`, `IOUtils`, `PathUtils`
+- **Decompose Conditional** - Simplificar condicionales complejos (se usó en Week 3)
+- **Replace Method with Method Object** - Para métodos muy complejos
+- **Substitute Algorithm** - Reemplazar algoritmos ineficientes
+
+**Estimado:** 10-20 mejoras
+
+---
+
+#### 2. **Simplifying Method Calls** (Simplificar Llamadas a Métodos) ⭐ ALTA PRIORIDAD
+**Objetivo:** Hacer interfaces más limpias y predecibles
+
+Técnicas a aplicar:
+- **Replace Error Code with Exception** ⭐ CRÍTICA PARA WEEK 4
+  - `FileUtils.delete()` retorna `boolean` → Lanzar `IOException`
+  - `FileUtils.deleteDirectory()` retorna `boolean` → Lanzar `IOException`
+  - `IOUtils` métodos que retornan códigos de error
+  - Candidatos: 5-10 métodos
+  
+- **Remove Parameter** - Eliminar parámetros innecesarios
+  - Métodos con parámetros que siempre tienen el mismo valor
+  - Candidatos en `PathUtils`, `FileUtils`
+  
+- **Introduce Parameter Object** - Agrupar parámetros relacionados
+  - Métodos con 4+ parámetros relacionados (LinkOption[], FileAttribute[], etc.)
+  - Candidatos: `PathUtils.createParentDirectories()`, `PathUtils.copyDirectory()`
+
+- **Replace Constructor with Factory Method** - Simplificar creación de objetos
+  - `TailerListener`, `FileDeleteStrategy` opciones
+
+**Estimado:** 15-25 mejoras
+
+---
+
+#### 3. **Organizing Data** (Organización de Datos)
+**Objetivo:** Mejorar estructura y encapsulamiento de datos
+
+Técnicas a aplicar:
+- **Replace Magic Number with Symbolic Constant**
+  - Números mágicos en offsets, buffer sizes, timeouts
+  - Candidatos: `IOUtils.DEFAULT_BUFFER_SIZE`, `Tailer.DEFAULT_DELAY_MILLIS`
+  
+- **Encapsulate Field** - Encapsular campos públicos
+  - Revisar si hay campos públicos en clases internas
+  
+- **Replace Array with Object** - Reemplazar arrays genéricos con objetos
+  - `byteSizeUnits` en Week 3 (ya hecho como parte de refactorización)
+
+**Estimado:** 5-10 mejoras
+
+---
+
+#### 4. **Simplifying Conditional Expressions** (Simplificar Expresiones Condicionales)
+**Objetivo:** Hacer condicionales más legibles
+
+Técnicas a aplicar:
+- **Consolidate Conditional Expression** - Combinar múltiples condiciones
+  - `if (a) { ... } if (b) { ... } if (a || b) { ... }`
+  
+- **Replace Nested Conditional with Guard Clauses** - Guard patterns
+  - Métodos con condicionales anidados profundos
+  - Patrón: `if (invalid) return;` al inicio
+  
+- **Introduce Null Object** - Manejar null de forma elegante
+  - Métodos con múltiples `if (x == null)` checks
+
+**Estimado:** 5-15 mejoras
+
+---
+
+#### 5. **Moving Features between Objects** (Mover Características entre Objetos)
+**Objetivo:** Mejorar cohesión y separación de responsabilidades
+
+Técnicas a aplicar:
+- **Move Method** - Si un método usa más datos de otra clase
+- **Extract Class** - Si una clase tiene múltiples responsabilidades
+- **Hide Delegate** - Ocultar implementación interna
+
+**Estimado:** 0-5 mejoras (bajo para commons-io)
+
+---
+
+#### 6. **Dealing with Generalization** (Manejo de Generalización)
+**Objetivo:** Mejorar jerarquías de clases
+
+Técnicas a aplicar:
+- **Extract Interface** - Para clases que implementan múltiples comportamientos
+- **Collapse Hierarchy** - Si clases heredan sin motivo
+
+**Estimado:** 0-5 mejoras (bajo para commons-io)
+
+---
+
+## 🎯 PRIORIDAD WEEK 4
+
+### 🔴 CRÍTICO - Replace Error Code with Exception
+
+**Justificación:** La gestión de errores basada en códigos de retorno (boolean) es propensa a errores.
+
+**Métodos a refactorizar:**
+
+1. **FileUtils.java:**
+   - `delete(File file)` - Retorna boolean → IOException
+   - `deleteDirectory(File directory)` - Retorna boolean → IOException
+   - `deleteQuietly(File file)` - Retorna boolean → void (mantener pero documentar)
+
+2. **PathUtils.java:**
+   - `delete(Path path, DeleteOption... options)` - Ya retorna PathCounters
+   - Revisar si hay métodos que retornan boolean
+
+3. **IOUtils.java:**
+   - Métodos que retornan -1 como indicador de error
+   - `closeQuietly()` - Revisar si es necesario cambiar
+
+**Impacto:**
+- ✅ API más consistente con Java standards
+- ✅ Menos propenso a ignorar errores silenciosos
+- ⚠️ Cambio de API (breaking change potencial)
+- ✅ Mejor manejo de excepciones
+
+**Patrón a aplicar:**
+
+ANTES:
+```java
+public static boolean delete(final File file) {
+    if (!file.exists()) {
+        return false;
+    }
+    if (file.delete()) {
+        return true;
+    }
+    return false;
+}
+
+// Uso:
+if (!delete(file)) {
+    // Error silencioso
+}
+```
+
+DESPUÉS:
+```java
+public static void delete(final File file) throws IOException {
+    if (!file.exists()) {
+        throw new IOException("File does not exist: " + file);
+    }
+    if (!file.delete()) {
+        throw new IOException("Cannot delete file: " + file);
+    }
+}
+
+// Uso:
+try {
+    delete(file);
+} catch (IOException e) {
+    // Error explícito
+}
+```
+
+---
+
+### 🟠 ALTO - Replace Temp with Query & Extract Method
+
+**Candidatos en FileUtils:**
+```java
+// ANTES - Temp variables
+public static long sizeOfDirectory(final File directory) {
+    long size = 0;
+    File[] files = directory.listFiles();
+    for (File file : files) {
+        size += file.length();
+    }
+    return size;
+}
+
+// DESPUÉS - Query methods
+public static long sizeOfDirectory(final File directory) {
+    return calculateDirectorySizeRecursively(directory);
+}
+
+private static long calculateDirectorySizeRecursively(final File directory) {
+    // Lógica encapsulada
+}
+```
+
+**Estimado:** 5-10 métodos
+
+---
+
+### 🟡 MODERADO - Introduce Parameter Object
+
+**Candidatos:**
+```java
+// ANTES - Múltiples parámetros relacionados
+public static Path copyDirectory(
+    final Path sourceDirectory, 
+    final Path targetDirectory, 
+    final LinkOption linkOption1,
+    final LinkOption linkOption2,
+    final CopyOption... copyOptions) throws IOException
+
+// DESPUÉS - Parameter Object
+public static Path copyDirectory(
+    final Path sourceDirectory,
+    final Path targetDirectory,
+    final DirectoryOptions options) throws IOException
+```
+
+**Ventajas:**
+- ✅ Más fácil de entender
+- ✅ Más fácil de extender
+- ✅ Menos propenso a errores
+
+**Estimado:** 3-5 parámetro objects
+
+---
+
+### 🟢 BAJO - Magic Numbers & Guard Clauses
+
+**Candidatos:**
+```java
+// ANTES
+public static void copy(InputStream in, OutputStream out) throws IOException {
+    byte[] buffer = new byte[8192];  // ← Magic number
+    int read;
+    while ((read = in.read(buffer)) != -1) {
+        out.write(buffer, 0, read);
+    }
+}
+
+// DESPUÉS
+private static final int DEFAULT_BUFFER_SIZE = 8192;
+
+public static void copy(InputStream in, OutputStream out) throws IOException {
+    byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+    int read;
+    while ((read = in.read(buffer)) != -1) {
+        out.write(buffer, 0, read);
+    }
+}
+```
+
+**Estimado:** 5-10 constantes
+
+---
+
+## 📊 Proyección Week 4
+
+| Técnica | Archivos | Mejoras Estimadas |
+|---------|----------|------------------|
+| Replace Error Code | FileUtils, IOUtils, PathUtils | 8-12 |
+| Extract/Replace Methods | FileUtils, IOUtils, PathUtils | 10-15 |
+| Introduce Parameter Object | PathUtils, FileUtils | 3-5 |
+| Magic Numbers → Constants | Varios | 5-10 |
+| Guard Clauses | FileUtils, PathUtils | 3-5 |
+| **TOTAL** | **8-10 archivos** | **29-47 mejoras** |
+
+**Target Week 4:** 25-50 mejoras (continuación del ritmo de Week 3)
+
+---
+
+## 🚀 Inicio Fase 1 - Week 4
+
+**Fase 1 (Priority 1): Replace Error Code with Exception**
+- Objetivo: 8-12 mejoras
+- Archivos: FileUtils, IOUtils, PathUtils
+- Tiempo estimado: 1-2 horas
+- Riesgo: Moderado (cambio de API)
+
+**Fase 2 (Priority 2): Extract & Replace Methods**
+- Objetivo: 10-15 mejoras
+- Archivos: FileUtils, IOUtils
+- Tiempo estimado: 1-2 horas
+- Riesgo: Bajo
+
+**Fase 3 (Priority 3): Parameter Objects & Constants**
+- Objetivo: 8-15 mejoras
+- Archivos: PathUtils, varios
+- Tiempo estimado: 1-2 horas
+- Riesgo: Bajo
+
+---
+
+**Week 4: LISTA PARA COMENZAR** 🚀
+
+**¿Empezamos con Fase 1 (Replace Error Code with Exception)?**

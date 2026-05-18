@@ -1377,6 +1377,33 @@ public class FileUtils {
      * {@code false}.
      * @since 1.4
      */
+    public static void deleteOrThrow(final File file) throws IOException {
+        Objects.requireNonNull(file, PROTOCOL_FILE);
+        if (!file.exists()) {
+            throw new FileNotFoundException("File/directory does not exist: " + file.getAbsolutePath());
+        }
+        if (file.isDirectory()) {
+            deleteDirectory(file);
+        } else {
+            delete(file);
+        }
+    }
+
+    /**
+     * Deletes a file, never throwing an exception. If file is a directory, delete it and all subdirectories.
+     * <p>
+     * The difference between File.delete() and this method are:
+     * </p>
+     * <ul>
+     * <li>A directory to be deleted does not have to be empty.</li>
+     * <li>No exceptions are thrown when a file or directory cannot be deleted.</li>
+     * </ul>
+     *
+     * @param file file or directory to delete, can be {@code null}.
+     * @return {@code true} if the file or directory was deleted, otherwise
+     * {@code false}.
+     * @since 1.4
+     */
     public static boolean deleteQuietly(final File file) {
         if (file == null) {
             return false;

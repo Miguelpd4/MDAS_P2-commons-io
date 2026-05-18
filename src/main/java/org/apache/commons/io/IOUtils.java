@@ -824,6 +824,22 @@ public class IOUtils {
     }
 
     /**
+     * Closes a {@link Closeable} resource, throwing IOException if close fails.
+     * Exception-throwing variant of closeQuietly for scenarios where errors must not be silenced.
+     * Provides better error handling and debugging.
+     *
+     * @param closeable the resource to close, must not be null.
+     * @throws IOException if an I/O error occurs during close.
+     * @throws NullPointerException if closeable is null.
+     */
+    public static void closeOrThrow(final Closeable closeable) throws IOException {
+        if (closeable == null) {
+            throw new NullPointerException("Closeable resource cannot be null");
+        }
+        closeable.close();
+    }
+
+    /**
      * Closes a {@link Closeable} unconditionally.
      * <p>
      * Equivalent to {@link Closeable#close()}, except any exceptions will be ignored.
@@ -874,6 +890,38 @@ public class IOUtils {
     public static void closeQuietly(final Closeable... closeables) {
         if (closeables != null) {
             closeQuietly(Arrays.stream(closeables));
+        }
+    }
+
+    /**
+     * Closes multiple Closeable resources, throwing IOException if any resource fails to close.
+     * Exception-throwing variant for scenarios where close errors must not be silenced.
+     * Closes all resources and aggregates exceptions using addSuppressed.
+     *
+     * @param closeables the Closeable resources to close, each must not be null.
+     * @throws IOException if any resource fails to close.
+     * @throws NullPointerException if closeables array is null.
+     */
+    public static void closeOrThrow(final Closeable... closeables) throws IOException {
+        if (closeables == null) {
+            throw new NullPointerException("Closeable array cannot be null");
+        }
+        IOException firstException = null;
+        for (final Closeable closeable : closeables) {
+            if (closeable != null) {
+                try {
+                    closeable.close();
+                } catch (final IOException e) {
+                    if (firstException == null) {
+                        firstException = e;
+                    } else {
+                        firstException.addSuppressed(e);
+                    }
+                }
+            }
+        }
+        if (firstException != null) {
+            throw firstException;
         }
     }
 
@@ -930,6 +978,21 @@ public class IOUtils {
     }
 
     /**
+     * Closes an InputStream, throwing IOException if close fails.
+     * Exception-throwing variant for scenarios where close errors must not be silenced.
+     *
+     * @param input the InputStream to close, must not be null.
+     * @throws IOException if an I/O error occurs during close.
+     * @throws NullPointerException if input is null.
+     */
+    public static void closeOrThrow(final InputStream input) throws IOException {
+        if (input == null) {
+            throw new NullPointerException("InputStream cannot be null");
+        }
+        input.close();
+    }
+
+    /**
      * Closes an iterable of {@link Closeable} unconditionally.
      * <p>
      * Equivalent calling {@link Closeable#close()} on each element, except any exceptions will be ignored.
@@ -979,6 +1042,21 @@ public class IOUtils {
     }
 
     /**
+     * Closes an OutputStream, throwing IOException if close fails.
+     * Exception-throwing variant for scenarios where close errors must not be silenced.
+     *
+     * @param output the OutputStream to close, must not be null.
+     * @throws IOException if an I/O error occurs during close.
+     * @throws NullPointerException if output is null.
+     */
+    public static void closeOrThrow(final OutputStream output) throws IOException {
+        if (output == null) {
+            throw new NullPointerException("OutputStream cannot be null");
+        }
+        output.close();
+    }
+
+    /**
      * Closes an {@link Reader} unconditionally.
      * <p>
      * Equivalent to {@link Reader#close()}, except any exceptions will be ignored. This is typically used in finally blocks.
@@ -1012,6 +1090,21 @@ public class IOUtils {
     }
 
     /**
+     * Closes a Reader, throwing IOException if close fails.
+     * Exception-throwing variant for scenarios where close errors must not be silenced.
+     *
+     * @param reader the Reader to close, must not be null.
+     * @throws IOException if an I/O error occurs during close.
+     * @throws NullPointerException if reader is null.
+     */
+    public static void closeOrThrow(final Reader reader) throws IOException {
+        if (reader == null) {
+            throw new NullPointerException("Reader cannot be null");
+        }
+        reader.close();
+    }
+
+    /**
      * Closes a {@link Selector} unconditionally.
      * <p>
      * Equivalent to {@link Selector#close()}, except any exceptions will be ignored. This is typically used in finally blocks.
@@ -1041,6 +1134,21 @@ public class IOUtils {
      */
     public static void closeQuietly(final Selector selector) {
         closeQ(selector);
+    }
+
+    /**
+     * Closes a Selector, throwing IOException if close fails.
+     * Exception-throwing variant for scenarios where close errors must not be silenced.
+     *
+     * @param selector the Selector to close, must not be null.
+     * @throws IOException if an I/O error occurs during close.
+     * @throws NullPointerException if selector is null.
+     */
+    public static void closeOrThrow(final Selector selector) throws IOException {
+        if (selector == null) {
+            throw new NullPointerException("Selector cannot be null");
+        }
+        selector.close();
     }
 
     /**
@@ -1077,6 +1185,21 @@ public class IOUtils {
     }
 
     /**
+     * Closes a ServerSocket, throwing IOException if close fails.
+     * Exception-throwing variant for scenarios where close errors must not be silenced.
+     *
+     * @param serverSocket the ServerSocket to close, must not be null.
+     * @throws IOException if an I/O error occurs during close.
+     * @throws NullPointerException if serverSocket is null.
+     */
+    public static void closeOrThrow(final ServerSocket serverSocket) throws IOException {
+        if (serverSocket == null) {
+            throw new NullPointerException("ServerSocket cannot be null");
+        }
+        serverSocket.close();
+    }
+
+    /**
      * Closes a {@link Socket} unconditionally.
      * <p>
      * Equivalent to {@link Socket#close()}, except any exceptions will be ignored. This is typically used in finally blocks.
@@ -1107,6 +1230,21 @@ public class IOUtils {
      */
     public static void closeQuietly(final Socket socket) {
         closeQ(socket);
+    }
+
+    /**
+     * Closes a Socket, throwing IOException if close fails.
+     * Exception-throwing variant for scenarios where close errors must not be silenced.
+     *
+     * @param socket the Socket to close, must not be null.
+     * @throws IOException if an I/O error occurs during close.
+     * @throws NullPointerException if socket is null.
+     */
+    public static void closeOrThrow(final Socket socket) throws IOException {
+        if (socket == null) {
+            throw new NullPointerException("Socket cannot be null");
+        }
+        socket.close();
     }
 
     /**
@@ -1155,6 +1293,21 @@ public class IOUtils {
      */
     public static void closeQuietly(final Writer writer) {
         closeQ(writer);
+    }
+
+    /**
+     * Closes a Writer, throwing IOException if close fails.
+     * Exception-throwing variant for scenarios where close errors must not be silenced.
+     *
+     * @param writer the Writer to close, must not be null.
+     * @throws IOException if an I/O error occurs during close.
+     * @throws NullPointerException if writer is null.
+     */
+    public static void closeOrThrow(final Writer writer) throws IOException {
+        if (writer == null) {
+            throw new NullPointerException("Writer cannot be null");
+        }
+        writer.close();
     }
 
     /**

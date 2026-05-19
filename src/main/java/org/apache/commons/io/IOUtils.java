@@ -1631,7 +1631,22 @@ public class IOUtils {
     }
 
     /**
-     * Copies bytes from a {@link ByteArrayOutputStream} to a {@link QueueInputStream}.
+     * Copies bytes from an InputStream to an OutputStream with a custom buffer size.
+     * Extracted method: generic version for configuration-driven copy operations.
+     *
+     * @param input the InputStream to read from
+     * @param output the OutputStream to write to
+     * @param bufferSize the size of the buffer to use
+     * @return the number of bytes copied
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static long copyWithBuffer(final InputStream input, final OutputStream output, final int bufferSize) throws IOException {
+        return copy(input, output, bufferSize);
+    }
+
+    /**
+     * Copies bytes from a ByteArrayOutputStream to a QueueInputStream.
      * <p>
      * Unlike using JDK {@link PipedInputStream} and {@link PipedOutputStream} for this, this solution works safely in a single thread environment.
      * </p>
@@ -2151,6 +2166,40 @@ public class IOUtils {
     }
 
     /**
+     * Copies bytes from input to output with offset and length using custom buffer.
+     * Extracted method: generic configuration-driven variant for complex copy scenarios.
+     *
+     * @param input the InputStream to read from
+     * @param output the OutputStream to write to
+     * @param inputOffset bytes to skip before copying
+     * @param length maximum bytes to copy (0 or less = all)
+     * @param buffer the buffer to use
+     * @return number of bytes copied
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static long copyLargeWithConfig(final InputStream input, final OutputStream output, final long inputOffset, final long length, final byte[] buffer) throws IOException {
+        return copyLarge(input, output, inputOffset, length, buffer);
+    }
+
+    /**
+     * Copies characters from Reader to Writer with offset and length using custom buffer.
+     * Extracted method: generic configuration-driven variant for complex copy scenarios.
+     *
+     * @param reader the Reader to read from
+     * @param writer the Writer to write to
+     * @param inputOffset characters to skip before copying
+     * @param length maximum characters to copy (0 or less = all)
+     * @param buffer the buffer to use
+     * @return number of characters copied
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static long copyLargeWithConfig(final Reader reader, final Writer writer, final long inputOffset, final long length, final char[] buffer) throws IOException {
+        return copyLarge(reader, writer, inputOffset, length, buffer);
+    }
+
+    /**
         if (inputOffset > 0) {
             skipFully(reader, inputOffset);
         }
@@ -2376,6 +2425,22 @@ public class IOUtils {
      * @throws IOException               if a read error occurs.
      */
     public static int readWithOffsetAndLength(final InputStream input, final byte[] buffer, final int offset, final int length) throws IOException {
+        return read(input, buffer, offset, length);
+    }
+
+    /**
+     * Reads bytes from an input stream with configuration parameters.
+     * Extracted method: generic variant for configuration-driven read operations.
+     *
+     * @param input  the InputStream to read from
+     * @param buffer the destination buffer
+     * @param offset the offset in the buffer
+     * @param length the number of bytes to read
+     * @return the actual number of bytes read
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static int readWithConfig(final InputStream input, final byte[] buffer, final int offset, final int length) throws IOException {
         return read(input, buffer, offset, length);
     }
 
@@ -2942,6 +3007,21 @@ public class IOUtils {
      */
     public static long skipUsingDefaultBuffer(final InputStream input, final long skip) throws IOException {
         return skip(input, skip, () -> new byte[DEFAULT_BUFFER_SIZE]);
+    }
+
+    /**
+     * Skips bytes from an InputStream with custom buffer configuration.
+     * Extracted method: generic variant for configuration-driven skip operations.
+     *
+     * @param input the InputStream to skip
+     * @param skip the number of bytes to skip
+     * @param bufferSupplier supplier for the skip buffer
+     * @return the number of bytes actually skipped
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static long skipWithConfig(final InputStream input, final long skip, final Supplier<byte[]> bufferSupplier) throws IOException {
+        return skip(input, skip, bufferSupplier);
     }
 
     /**
@@ -3654,6 +3734,34 @@ public class IOUtils {
      */
     public static String toString(final byte[] input, final String charsetName) {
         return new String(input, Charsets.toCharset(charsetName));
+    }
+
+    /**
+     * Gets the contents of a byte array as a String with charset configuration.
+     * Extracted method: generic variant for configuration-driven string conversion.
+     *
+     * @param input the byte array to read
+     * @param charset the character set to use for decoding
+     * @return the requested String
+     * @throws NullPointerException if the input is null
+     * @since 2.22
+     */
+    public static String toStringWithCharset(final byte[] input, final Charset charset) {
+        return new String(input, Charsets.toCharset(charset));
+    }
+
+    /**
+     * Gets the contents of an InputStream as a String with charset configuration.
+     * Extracted method: generic variant for configuration-driven string conversion.
+     *
+     * @param input the InputStream to read
+     * @param charset the character set to use
+     * @return the requested String
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static String toStringWithCharset(final InputStream input, final Charset charset) throws IOException {
+        return toString(input, charset);
     }
 
     /**

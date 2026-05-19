@@ -221,6 +221,34 @@ public class FileUtils {
     public static final File[] EMPTY_FILE_ARRAY = {};
 
     /**
+     * Semantic constant: Preserve file modification dates when copying.
+     * Use instead of boolean true in copy operations for improved readability.
+     * @since 2.22
+     */
+    public static final boolean PRESERVE_FILE_DATE = true;
+
+    /**
+     * Semantic constant: Do not preserve file modification dates when copying.
+     * Use instead of boolean false in copy operations for improved readability.
+     * @since 2.22
+     */
+    public static final boolean DONT_PRESERVE_FILE_DATE = false;
+
+    /**
+     * Semantic constant: Append to file when writing.
+     * Use instead of boolean true in write operations for improved readability.
+     * @since 2.22
+     */
+    public static final boolean APPEND_TO_FILE = true;
+
+    /**
+     * Semantic constant: Do not append to file when writing (overwrite).
+     * Use instead of boolean false in write operations for improved readability.
+     * @since 2.22
+     */
+    public static final boolean DONT_APPEND_TO_FILE = false;
+
+    /**
      * Returns a human-readable version of the file size, where the input represents a specific number of bytes.
      * <p>
      * If the size is over 1GB, the size is returned as the number of whole GB, the size is rounded down to the
@@ -786,6 +814,21 @@ public class FileUtils {
     }
 
     /**
+     * Copies a directory to a new location, with explicit date preservation configuration.
+     * Extracted method: generic version using semantic constants for better code clarity.
+     *
+     * @param srcDir       an existing directory to copy, must not be {@code null}.
+     * @param destDir      the new directory, must not be {@code null}.
+     * @param preserveDate true to preserve directory dates, use {@link #PRESERVE_FILE_DATE} for clarity.
+     * @throws IOException if source or destination is invalid.
+     * @see #PRESERVE_FILE_DATE
+     * @see #DONT_PRESERVE_FILE_DATE
+     */
+    public static void copyDirectoryWithConfig(final File srcDir, final File destDir, final boolean preserveDate) throws IOException {
+        copyDirectory(srcDir, destDir, preserveDate);
+    }
+
+    /**
      * Copies a directory to within another directory preserving the file dates.
      * <p>
      * This method copies the source directory and all its contents to a directory of the same name in the specified
@@ -814,6 +857,21 @@ public class FileUtils {
         Objects.requireNonNull(sourceDir, "sourceDir");
         requireDirectoryIfExists(destinationDir, "destinationDir");
         copyDirectory(sourceDir, new File(destinationDir, sourceDir.getName()), true);
+    }
+
+    /**
+     * Copies a file to a new location, with explicit date preservation configuration.
+     * Extracted method: generic version using semantic constants for better code clarity.
+     *
+     * @param srcFile       an existing file to copy, must not be {@code null}.
+     * @param destFile      the new file, must not be {@code null}.
+     * @param preserveDate  true to preserve file dates, use {@link #PRESERVE_FILE_DATE} for clarity.
+     * @throws IOException  if source or destination is invalid.
+     * @see #PRESERVE_FILE_DATE
+     * @see #DONT_PRESERVE_FILE_DATE
+     */
+    public static void copyFileWithConfig(final File srcFile, final File destFile, final boolean preserveDate) throws IOException {
+        copyFile(srcFile, destFile, preserveDate, StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**
@@ -3058,6 +3116,30 @@ public class FileUtils {
     }
 
     /**
+     * Reads a file contents into a String with charset configuration.
+     * Extracted method: generic variant for configuration-driven read operations.
+     *
+     * @param file the file to read
+     * @param charset the character set to use
+     * @return the file contents as String
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    /**
+     * Reads a file contents into a String with charset configuration.
+     * Extracted method: generic variant for configuration-driven read operations.
+     *
+     * @param file the file to read
+     * @param charset the character set to use
+     * @return the file contents as String
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static String readFileWithConfig(final File file, final Charset charset) throws IOException {
+        return readFileToString(file, charset);
+    }
+
+    /**
      * Reads the contents of a file line by line to a List of Strings using the virtual machine's {@linkplain Charset#defaultCharset() default charset}.
      * The file is always closed.
      *
@@ -3762,6 +3844,24 @@ public class FileUtils {
     }
 
     /**
+     * Writes byte array with offset, length, and append configuration.
+     * Extracted method: generic variant for configuration-driven byte array write operations.
+     *
+     * @param file the file to write to
+     * @param data the byte array to write
+     * @param off the offset into the array
+     * @param len the number of bytes to write
+     * @param append true to append, false to overwrite. Use {@link #APPEND_TO_FILE} or {@link #DONT_APPEND_TO_FILE} for clarity.
+     * @throws IOException if an I/O error occurs
+     * @see #APPEND_TO_FILE
+     * @see #DONT_APPEND_TO_FILE
+     * @since 2.22
+     */
+    public static void writeByteArrayWithConfig(final File file, final byte[] data, final int off, final int len, final boolean append) throws IOException {
+        writeByteArrayToFile(file, data, off, len, append);
+    }
+
+    /**
      * Writes the {@code toString()} value of each item in a collection to
      * the specified {@link File} line by line.
      * The default VM encoding and the default line ending will be used.
@@ -4066,6 +4166,23 @@ public class FileUtils {
      */
     public static void writeStringToFile(final File file, final String data, final String charsetName, final boolean append) throws IOException {
         writeStringToFile(file, data, Charsets.toCharset(charsetName), append);
+    }
+
+    /**
+     * Writes a String to a file with charset and append configuration.
+     * Extracted method: generic variant for configuration-driven write operations.
+     *
+     * @param file the file to write
+     * @param data the content to write
+     * @param charset the character set to use
+     * @param append true to append, false to overwrite. Use {@link #APPEND_TO_FILE} or {@link #DONT_APPEND_TO_FILE} for clarity.
+     * @throws IOException if an I/O error occurs
+     * @see #APPEND_TO_FILE
+     * @see #DONT_APPEND_TO_FILE
+     * @since 2.22
+     */
+    public static void writeStringWithConfig(final File file, final String data, final Charset charset, final boolean append) throws IOException {
+        writeStringToFile(file, data, charset, append);
     }
 
     /**

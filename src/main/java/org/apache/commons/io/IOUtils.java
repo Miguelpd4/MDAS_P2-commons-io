@@ -272,6 +272,34 @@ public class IOUtils {
     public static final int DEFAULT_BUFFER_SIZE = 8192;
 
     /**
+     * Small buffer size ({@value} bytes) for memory-constrained operations.
+     * Use for embedded systems or low-memory scenarios.
+     * @since 2.22
+     */
+    public static final int SMALL_BUFFER_SIZE = 1024;
+
+    /**
+     * Large buffer size ({@value} bytes) for high-throughput operations.
+     * Use for optimal performance when copying large amounts of data.
+     * @since 2.22
+     */
+    public static final int LARGE_BUFFER_SIZE = 65536;
+
+    /**
+     * Constant for copy operations: start from beginning (offset = 0).
+     * Use instead of literal 0L for improved code clarity.
+     * @since 2.22
+     */
+    public static final long COPY_FROM_START = 0L;
+
+    /**
+     * Constant for copy operations: copy all data (no length limit).
+     * Use instead of literal 0L for improved code clarity in length parameters.
+     * @since 2.22
+     */
+    public static final long COPY_ALL_DATA = 0L;
+
+    /**
      * The system directory separator character.
      */
     public static final char DIR_SEPARATOR = File.separatorChar;
@@ -2040,6 +2068,52 @@ public class IOUtils {
     }
 
     /**
+     * Copies all bytes from input to output using semantic constants.
+     * Demonstrates COPY_FROM_START and COPY_ALL_DATA constants for improved code clarity.
+     *
+     * @param input the InputStream to read from
+     * @param output the OutputStream to write to
+     * @param buffer the buffer to use
+     * @return the number of bytes copied
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static long copyLargeFromStart(final InputStream input, final OutputStream output, final byte[] buffer) throws IOException {
+        return copyLarge(input, output, COPY_FROM_START, COPY_ALL_DATA, buffer);
+    }
+
+    /**
+     * Copies bytes from input to output using DEFAULT_BUFFER_SIZE.
+     * Semantic variant for standard throughput copy operations.
+     *
+     * @param input the InputStream to read from
+     * @param output the OutputStream to write to
+     * @return the number of bytes copied
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static long copyLargeWithDefaultBuffer(final InputStream input, final OutputStream output) throws IOException {
+        try (ScratchBytes scratch = ScratchBytes.get()) {
+            return copyLarge(input, output, scratch.array());
+        }
+    }
+
+    /**
+     * Copies all characters from reader to writer using semantic constants.
+     * Demonstrates COPY_FROM_START and COPY_ALL_DATA constants for improved code clarity.
+     *
+     * @param reader the Reader to read from
+     * @param writer the Writer to write to
+     * @param buffer the buffer to use
+     * @return the number of characters copied
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static long copyLargeFromStart(final Reader reader, final Writer writer, final char[] buffer) throws IOException {
+        return copyLarge(reader, writer, COPY_FROM_START, COPY_ALL_DATA, buffer);
+    }
+
+    /**
      * Copies chars from a large (over 2GB) {@link Reader} to a {@link Writer}.
      * <p>
      * This method buffers the input internally, so there is no need to use a {@link BufferedReader}.
@@ -2473,6 +2547,34 @@ public class IOUtils {
             remaining -= count;
         }
         return length - remaining;
+    }
+
+    /**
+     * Reads data using a small buffer suitable for memory-constrained operations.
+     * Semantic wrapper demonstrating SMALL_BUFFER_SIZE constant usage.
+     *
+     * @param input the InputStream to read from
+     * @param buffer the buffer to use
+     * @return the number of bytes read
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static int readWithSmallBuffer(final InputStream input, final byte[] buffer) throws IOException {
+        return read(input, buffer, 0, Math.min(buffer.length, SMALL_BUFFER_SIZE));
+    }
+
+    /**
+     * Reads data using a large buffer suitable for high-throughput operations.
+     * Semantic wrapper demonstrating LARGE_BUFFER_SIZE constant usage.
+     *
+     * @param input the InputStream to read from
+     * @param buffer the buffer to use
+     * @return the number of bytes read
+     * @throws IOException if an I/O error occurs
+     * @since 2.22
+     */
+    public static int readWithLargeBuffer(final InputStream input, final byte[] buffer) throws IOException {
+        return read(input, buffer, 0, Math.min(buffer.length, LARGE_BUFFER_SIZE));
     }
 
     /**

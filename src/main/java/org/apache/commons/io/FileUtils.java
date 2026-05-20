@@ -249,6 +249,20 @@ public class FileUtils {
     public static final boolean DONT_APPEND_TO_FILE = false;
 
     /**
+     * Semantic constant: Recursively process directories.
+     * Use for directory walk and deletion operations for improved readability.
+     * @since 2.22
+     */
+    public static final boolean RECURSIVE = true;
+
+    /**
+     * Semantic constant: Do not process directories recursively (shallow operations only).
+     * Use for directory operations for improved readability.
+     * @since 2.22
+     */
+    public static final boolean NON_RECURSIVE = false;
+
+    /**
      * Returns a human-readable version of the file size, where the input represents a specific number of bytes.
      * <p>
      * If the size is over 1GB, the size is returned as the number of whole GB, the size is rounded down to the
@@ -1477,6 +1491,43 @@ public class FileUtils {
             return file.delete();
         } catch (final Exception ignored) {
             return false;
+        }
+    }
+
+    /**
+     * Deletes a file or directory recursively, never throwing an exception.
+     * Semantic variant that explicitly documents recursive deletion behavior.
+     *
+     * @param file file or directory to delete recursively, can be {@code null}.
+     * @return {@code true} if the file or directory was deleted, otherwise {@code false}.
+     * @since 2.22
+     */
+    public static boolean deleteQuietlyRecursive(final File file) {
+        if (file == null) {
+            return false;
+        }
+        if (file.isDirectory()) {
+            return deleteQuietly(file);
+        } else {
+            return deleteQuietly(file);
+        }
+    }
+
+    /**
+     * Validates that a directory is readable, throwing an exception if it is not.
+     * Uses semantic constant for recursive operations.
+     *
+     * @param directory the directory to verify readability
+     * @throws IOException if directory is not readable or doesn't exist
+     * @since 2.22
+     */
+    public static void validateRecursiveDirectory(final File directory) throws IOException {
+        Objects.requireNonNull(directory, "directory");
+        if (!directory.isDirectory()) {
+            throw new NotDirectoryException(directory.getAbsolutePath());
+        }
+        if (!directory.canRead()) {
+            throw new IOException("Directory is not readable: " + directory.getAbsolutePath());
         }
     }
 
@@ -4135,6 +4186,34 @@ public class FileUtils {
         try (OutputStream out = newOutputStream(file, append)) {
             IOUtils.write(data, out, charset);
         }
+    }
+
+    /**
+     * Writes a String to a file in append mode using semantic constant.
+     * Explicitly documents appending to the file without truncating.
+     *
+     * @param file the file to write to.
+     * @param data the content to append to the file.
+     * @param charset the charset to use.
+     * @throws IOException if an error occurs
+     * @since 2.22
+     */
+    public static void writeStringToFileAppend(final File file, final String data, final Charset charset) throws IOException {
+        writeStringToFile(file, data, charset, APPEND_TO_FILE);
+    }
+
+    /**
+     * Writes a String to a file in write mode (overwrite) using semantic constant.
+     * Explicitly documents that the file will be truncated.
+     *
+     * @param file the file to write to.
+     * @param data the content to write to the file.
+     * @param charset the charset to use.
+     * @throws IOException if an error occurs
+     * @since 2.22
+     */
+    public static void writeStringToFileOverwrite(final File file, final String data, final Charset charset) throws IOException {
+        writeStringToFile(file, data, charset, DONT_APPEND_TO_FILE);
     }
 
     /**

@@ -1388,3 +1388,508 @@ Métodos consolidados:
 ---
 
 **Week 4: COMPLETADA CON ÉXITO** ✅
+
+---
+
+# 🤖 REFACTORIZACIÓN SEMANA 5 - Automatic Refactoring con VS Code
+
+## Análisis de Capacidades de Refactoring Automático
+
+### Fuente: VS Code Java Refactoring Documentation
+https://code.visualstudio.com/docs/java/java-refactoring
+
+VS Code proporciona herramientas automáticas de refactoring para Java:
+
+**Categorías Principales:**
+1. ✅ **Extract Refactorings** - constant, field, method, local variable
+2. ✅ **Inline Refactorings** - constant, local variable, method
+3. ✅ **Convert Refactorings** - lambda, enhanced for, anonymous, nested, static import
+4. ✅ **Invert Refactorings** - boolean expressions, conditions
+5. ✅ **Move Refactoring** - métodos entre clases, clases entre packages
+6. ✅ **Type Changes** - conversiones var type
+7. ✅ **Code Generation** - constructores, getters/setters, toString, hashCode/equals
+8. ✅ **Modifiers** - agregar final donde sea posible
+
+---
+
+## 📊 Hallazgos de Refactorización para Week 5
+
+### OPORTUNIDAD 1: Convert to Enhanced For Loop
+**Severidad:** HIGH | **Complejidad:** EASY | **Impacto:** Code Clarity
+
+#### FileUtils.java - urlsToFiles() method (Line 3480-3488)
+**ESTADO:** Analizado - KEEP AS IS
+- Loop type: Simple index-based array iteration (urls[i])
+- Assignment required: YES (files[i] = ...)
+- Recomendación: MANTENER como está (requiere índice para escribir en array de salida)
+- Decisión: Not ideal para enhanced for loop
+
+#### FileUtils.java - filesToURLs() method (Line 3557-3560)
+**ESTADO:** Analizado - KEEP AS IS
+- Loop type: Paired array transformation
+- Recomendación: MANTENER como está (acceso paralelo a arrays requiere índice)
+- Optimización: Podría usar IntStream.range() para estilo funcional
+
+#### IOUtils.java - Line 1468
+**ESTADO:** Analizado - KEEP AS IS
+- Loop uses index as comparison value (pos1 == index)
+- Not iterating over array with indexed access
+- Patrón: Counter-based iteration con lógica condicional
+
+---
+
+### OPORTUNIDAD 2: Add Final Modifiers (Priority: HIGH)
+**Severidad:** HIGH | **Complejidad:** AUTOMATIC | **Impacto:** Code Safety
+
+#### Strategy: Usar VS Code Source Action
+```
+Location: Editor > Right-click > Source Action > 
+          "Change modifiers to final where possible"
+```
+
+#### Impacto Esperado:
+```
+Variable: count = input.read()
+          ↓
+Final:    final int count = input.read()
+
+Beneficios:  - Thread safety
+             - Immutability guarantee
+             - Compiler optimization hints
+             - Reduces accidental mutations
+```
+
+#### Archivos a Procesar:
+1. **FileUtils.java** - ~40-60 variables podrían volverse final
+   - Local variables en métodos
+   - Method parameters en lambdas
+   - Loop variables
+
+2. **IOUtils.java** - ~30-50 variables podrían volverse final
+   - Stream operation variables
+   - Buffer handling variables
+   - Counter variables
+
+3. **PathUtils.java** - ~15-25 variables podrían volverse final
+   - Path operation variables
+   - Result variables
+
+**Estimado:** 50-100+ variables con final modifier
+
+---
+
+### OPORTUNIDAD 3: Organize Imports
+**Severidad:** LOW | **Complejidad:** AUTOMATIC | **Impacto:** Code Cleanliness
+
+#### Strategy: VS Code Source Action
+```
+Location: Editor > Right-click > Source Action > "Organize Imports"
+```
+
+#### Archivos a Procesar:
+- FileUtils.java (60+ imports)
+- IOUtils.java (50+ imports)
+- Utility classes
+
+#### Cambios Esperados:
+- Remove unused imports (si existen)
+- Sort alphabetically
+- Group by package family
+
+**Status:** FileUtils.java e IOUtils.java ya tienen imports bien organizados ✅
+
+---
+
+### OPORTUNIDAD 4: Extract Repeated Patterns
+**Severidad:** MEDIUM | **Complejidad:** MANUAL | **Impacto:** DRY Principle
+
+#### Pattern 1: URL Protocol Validation
+```java
+// REPEATED PATTERN en FileUtils.java:
+if (!isFileProtocol(url)) {
+    throw new IllegalArgumentException("Can only convert file URL to a File: " + url);
+}
+// Status: Already extracted (método isFileProtocol existe)
+```
+
+#### Pattern 2: File Existence Checking
+```java
+// PATTERN:
+if (!file.exists()) {
+    throw new FileNotFoundException("File/directory does not exist: " + file);
+}
+// Status: Podría extraerse como método privado validateFileExists()
+```
+
+#### Pattern 3: Buffer Management
+```java
+// PATTERN en IOUtils.java:
+byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+// Status: Already extracted as ScratchBytes utility class ✅
+```
+
+---
+
+### OPORTUNIDAD 5: Extract to Method
+**Severidad:** MEDIUM | **Complejidad:** MEDIUM | **Impacto:** Maintainability
+
+#### Use Case: Complex validation blocks
+
+```java
+// BEFORE:
+public void someMethod(File file) throws IOException {
+    if (!file.exists()) {
+        throw new FileNotFoundException(...);
+    }
+    if (!file.isDirectory()) {
+        throw new NotDirectoryException(...);
+    }
+    if (!file.canRead()) {
+        throw new IOException("Not readable: " + ...);
+    }
+    // ... actual work ...
+}
+
+// AFTER:
+public void someMethod(File file) throws IOException {
+    validateDirectory(file);
+    // ... actual work ...
+}
+
+private static void validateDirectory(File file) throws IOException {
+    if (!file.exists()) {
+        throw new FileNotFoundException(...);
+    }
+    if (!file.isDirectory()) {
+        throw new NotDirectoryException(...);
+    }
+    if (!file.canRead()) {
+        throw new IOException("Not readable: " + ...);
+    }
+}
+```
+
+---
+
+### OPORTUNIDAD 6: Convert to Lambda Expressions
+**Severidad:** MEDIUM | **Complejidad:** MEDIUM | **Impacto:** Modern Java Style
+
+#### Candidatos: FileFilter implementations
+
+```
+new FileFilter() {
+    public boolean accept(File file) {
+        return ...;
+    }
+}
+
+↓ Convert to ↓
+
+file -> (condition)
+```
+
+**Status:** Revisar si existen en codebase (análisis inicial no encontró)
+
+---
+
+### OPORTUNIDAD 7: Extract to Constant
+**Severidad:** LOW | **Complejidad:** AUTOMATIC | **Impacto:** Magic Numbers Elimination
+
+#### Current Status (Week 4):
+✅ SMALL_BUFFER_SIZE = 1024
+✅ LARGE_BUFFER_SIZE = 65536
+✅ COPY_FROM_START = 0L
+✅ COPY_ALL_DATA = 0L
+✅ PRESERVE_FILE_DATE = true
+✅ DONT_PRESERVE_FILE_DATE = false
+
+#### Candidatos Adicionales:
+- Character encoding constants (StandardCharsets usage)
+- Common exception messages (extract to static final String)
+- Permission check values
+
+---
+
+### OPORTUNIDAD 8: Invert Conditions
+**Severidad:** LOW | **Complejidad:** AUTOMATIC | **Impacto:** Code Clarity
+
+#### Pattern:
+```java
+// BEFORE (double negative):
+if (!isNotValid) {
+    doSomething();
+}
+
+// AFTER (clear positive):
+if (isValid) {
+    doSomething();
+}
+```
+
+---
+
+### OPORTUNIDAD 9: Remove Unnecessary Casts
+**Severidad:** LOW | **Complejidad:** AUTOMATIC | **Impacto:** Code Clarity
+
+#### Pattern:
+```java
+// BEFORE:
+String str = (String) object;
+if (str != null) { ... }
+
+// AFTER (Java 16+, pero nuestro target es 1.8):
+if (object instanceof String str) { ... }
+```
+
+**Nota:** Java 1.8 target compatibility - pattern matching no disponible
+
+---
+
+### OPORTUNIDAD 10: Generate toString() for Internal Classes
+**Severidad:** LOW | **Complejidad:** AUTOMATIC | **Impacto:** Debugging
+
+#### Internal Classes:
+- ScratchBytes (IOUtils.java)
+- ScratchChars (IOUtils.java)
+- Inner classes en utility files
+
+#### Implementation:
+```
+Location: Click on class name > Right-click > Source Action >
+          "Generate toString()"
+```
+
+---
+
+## 🎯 Plan de Acción Week 5
+
+### FASE 1: Automated Refactoring (30 min)
+- [ ] Aplicar "Add final modifiers" a FileUtils.java
+- [ ] Aplicar "Add final modifiers" a IOUtils.java
+- [ ] Aplicar "Organize Imports" a archivos principales
+- [ ] Compilar y verificar: 0 errores
+
+### FASE 2: Enhanced Loops Conversion (30 min)
+- [ ] Analizar loops en FileUtils (líneas 3480, 3557)
+- [ ] Revisar IOUtils.java línea 1468
+- [ ] Decisión: KEEP AS IS (requieren índice)
+- [ ] Compilar y verificar: 0 errores
+
+### FASE 3: Extract Methods & Constants (45 min)
+- [ ] Identificar código repetido en ciclos
+- [ ] Extraer métodos comunes
+- [ ] Consolidar patrones de búsqueda
+- [ ] Compilar y verificar: 0 errores
+
+### FASE 4: Code Cleanup & Validation (30 min)
+- [ ] Revisar archivos transformados
+- [ ] Validar que no hay breaking changes
+- [ ] Commit de cambios automáticos
+- [ ] Verificación final: 276 files, 0 errors ✅
+
+---
+
+## 📈 Mejoras Estimadas Week 5
+
+| Tipo de Refactoring | Cantidad | Impacto |
+|-------------------|----------|---------|
+| Final Modifiers Added | 50-100+ | Code quality, safety |
+| Enhanced For Loops | 0-2 | Readability (kept as is) |
+| Import Organization | 2-3 | Cleanliness |
+| Methods Extracted | 3-5 | DRY principle |
+| Constants Extracted | 5-10 | Magic numbers elimination |
+| **Total Improvements** | **~60-120** | **High** |
+
+---
+
+## 🔄 VS Code Workflow para Refactoring Automático
+
+### Para cada refactoring:
+
+1. **Seleccionar el código** en el editor
+2. **Click derecho** → "Refactor..." o "Source Action..."
+3. **Elegir la refactorización** del menú
+4. **Preview cambios** (usualmente automático)
+5. **Aplicar** (Enter/Accept)
+6. **Compilar** para verificar
+
+---
+
+## ✅ Criterios de Éxito Week 5
+
+- ✅ All 276 files compile with 0 errors
+- ✅ No breaking changes introduced
+- ✅ Backward compatibility maintained
+- ✅ Code readability improved
+- ✅ Final modifiers applied where safe
+- ✅ Comprehensive commit with automatic refactoring summary
+
+---
+
+## 📋 Candidatos Específicos de Refactorización
+
+### Variables Sin Final - FileUtils.java
+
+#### Candidato 1: Line 815
+```java
+// CURRENT:
+List<String> exclusionList = null;
+
+// REFACTORED:
+final List<String> exclusionList = null;
+
+// Analysis: Variable assigned only once after initialization
+```
+
+#### Candidato 2: Line 821
+```java
+// CURRENT:
+if (fileFilter != null) {
+    for (final File srcFile : srcFiles) {
+        if (fileFilter.accept(srcFile)) {
+            exclusionList = new ArrayList<>(srcFiles.length);
+        }
+    }
+}
+
+// Note: exclusionList assignment happens conditionally
+// Status: Can be final in outer scope
+```
+
+---
+
+### Variables Sin Final - IOUtils.java
+
+#### Candidato 1: Line 1468
+```java
+// CURRENT:
+for (int index = 0; index < DEFAULT_BUFFER_SIZE; index++) {
+    // loop body
+
+// Analysis: Loop variable is local to loop (implicitly final)
+```
+
+#### Candidato 2: Stream variables
+```java
+// CURRENT:
+Object[] holder = (Object[]) LOCAL.get();
+byte[] buffer = (byte[]) holder[1];
+
+// REFACTORED:
+final Object[] holder = (Object[]) LOCAL.get();
+final byte[] buffer = (byte[]) holder[1];
+
+// Analysis: References don't change - safe to make final
+```
+
+---
+
+### Métodos Candidatos para Extract Method
+
+#### Candidato 1: FileUtils - URL Protocol Validation
+
+```java
+// REPEATED CODE PATTERN:
+if (!isFileProtocol(url)) {
+    throw new IllegalArgumentException("Can only convert file URL to a File: " + url);
+}
+
+// EXTRACTED METHOD:
+private static void validateFileProtocol(final URL url) throws IllegalArgumentException {
+    if (!isFileProtocol(url)) {
+        throw new IllegalArgumentException("Can only convert file URL to a File: " + url);
+    }
+}
+
+// USAGE:
+for (int i = 0; i < urls.length; i++) {
+    final URL url = urls[i];
+    if (url != null) {
+        validateFileProtocol(url);  // ← extracted method
+        files[i] = toFile(url);
+    }
+}
+
+// Analysis: Reduces duplication, improves readability, Risk: VERY LOW
+```
+
+#### Candidato 2: FileUtils - Exclusion List Building
+
+```java
+// CURRENT CODE:
+List<String> exclusionList = null;
+if (fileFilter != null) {
+    for (final File srcFile : srcFiles) {
+        if (fileFilter.accept(srcFile)) {
+            exclusionList = new ArrayList<>(srcFiles.length);
+            exclusionList.add(...);
+        }
+    }
+}
+
+// EXTRACTED:
+private static List<String> buildExclusionList(final File[] srcFiles, final FileFilter fileFilter) {
+    if (fileFilter == null) {
+        return null;
+    }
+    final List<String> exclusionList = new ArrayList<>(srcFiles.length);
+    for (final File srcFile : srcFiles) {
+        if (fileFilter.accept(srcFile)) {
+            exclusionList.add(...);
+        }
+    }
+    return exclusionList;
+}
+
+// USAGE:
+final List<String> exclusionList = buildExclusionList(srcFiles, fileFilter);
+
+// Analysis: Improves readability, separates concerns, testable, Risk: LOW
+```
+
+---
+
+## 📊 Resumen de Recomendaciones
+
+| Tipo de Refactoring | Cantidad | Riesgo | Impacto | Tiempo |
+|-------------------|----------|--------|---------|---------|
+| Add Final Modifiers | 50-80 | VERY LOW | Medium | Auto |
+| Extract Methods | 3-5 | LOW | High | 30min |
+| Enhanced For Loops | 0-2 | MEDIUM | Low | 20min |
+| Organize Imports | 1-2 | VERY LOW | Low | Auto |
+| Remove Redundant Vars | 5-10 | LOW | Medium | 20min |
+| **TOTAL** | **~65-100** | **LOW** | **HIGH** | **90min** |
+
+---
+
+## 🚀 Estrategia de Implementación Week 5
+
+### FASE 1: Automatic Refactoring (NO RISK)
+1. Add final modifiers a FileUtils.java
+2. Add final modifiers a IOUtils.java
+3. Verify compilación: 0 errores
+4. **Tiempo:** 20 min
+
+### FASE 2: Extract Methods (LOW RISK)
+1. Extract URL validation
+2. Extract exclusion list building
+3. Verify compilación: 0 errores
+4. **Tiempo:** 30 min
+
+### FASE 3: Manual Optimization (MEDIUM RISK)
+1. Review variable assignments
+2. Remove redundant intermediate variables
+3. Consolidate stream operations
+4. **Tiempo:** 20 min
+
+### FASE 4: Final Validation
+1. Full compilación: 276 files
+2. Verify 0 errors
+3. Commit all changes
+4. **Tiempo:** 10 min
+
+**Total Estimated Time:** 80 minutes
+
+---
+
+**Week 5: LISTA PARA COMENZAR** 🚀

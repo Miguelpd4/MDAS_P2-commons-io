@@ -379,7 +379,7 @@ public class IOUtils {
     public static BufferedInputStream buffer(final InputStream inputStream) {
         // reject null early on rather than waiting for IO operation to fail
         // not checked by BufferedInputStream
-        Objects.requireNonNull(inputStream, "inputStream");
+        requireInputStream(inputStream, "inputStream");
         return inputStream instanceof BufferedInputStream ? (BufferedInputStream) inputStream : new BufferedInputStream(inputStream);
     }
 
@@ -396,7 +396,7 @@ public class IOUtils {
     public static BufferedInputStream buffer(final InputStream inputStream, final int size) {
         // reject null early on rather than waiting for IO operation to fail
         // not checked by BufferedInputStream
-        Objects.requireNonNull(inputStream, "inputStream");
+        requireInputStream(inputStream, "inputStream");
         return inputStream instanceof BufferedInputStream ? (BufferedInputStream) inputStream : new BufferedInputStream(inputStream, size);
     }
 
@@ -412,7 +412,7 @@ public class IOUtils {
     public static BufferedOutputStream buffer(final OutputStream outputStream) {
         // reject null early on rather than waiting for IO operation to fail
         // not checked by BufferedInputStream
-        Objects.requireNonNull(outputStream, "outputStream");
+        requireOutputStream(outputStream, "outputStream");
         return outputStream instanceof BufferedOutputStream ? (BufferedOutputStream) outputStream : new BufferedOutputStream(outputStream);
     }
 
@@ -429,7 +429,7 @@ public class IOUtils {
     public static BufferedOutputStream buffer(final OutputStream outputStream, final int size) {
         // reject null early on rather than waiting for IO operation to fail
         // not checked by BufferedInputStream
-        Objects.requireNonNull(outputStream, "outputStream");
+        requireOutputStream(outputStream, "outputStream");
         return outputStream instanceof BufferedOutputStream ? (BufferedOutputStream) outputStream : new BufferedOutputStream(outputStream, size);
     }
 
@@ -4599,6 +4599,74 @@ public class IOUtils {
         }
         return new AppendableWriter<>(appendable);
     }
+
+    //========== PRIVATE STREAM VALIDATION HELPERS ==========
+
+    /**
+     * Validates that an InputStream is not null, throwing NullPointerException if it is.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param stream the stream to validate
+     * @param parameterName name of the parameter for error message
+     * @throws NullPointerException if stream is null
+     */
+    private static void requireInputStream(final InputStream stream, final String parameterName) {
+        Objects.requireNonNull(stream, parameterName);
+    }
+
+    /**
+     * Validates that an OutputStream is not null, throwing NullPointerException if it is.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param stream the stream to validate
+     * @param parameterName name of the parameter for error message
+     * @throws NullPointerException if stream is null
+     */
+    private static void requireOutputStream(final OutputStream stream, final String parameterName) {
+        Objects.requireNonNull(stream, parameterName);
+    }
+
+    /**
+     * Validates that a Reader is not null, throwing NullPointerException if it is.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param reader the reader to validate
+     * @param parameterName name of the parameter for error message
+     * @throws NullPointerException if reader is null
+     */
+    private static void requireReader(final Reader reader, final String parameterName) {
+        Objects.requireNonNull(reader, parameterName);
+    }
+
+    /**
+     * Validates that a Writer is not null, throwing NullPointerException if it is.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param writer the writer to validate
+     * @param parameterName name of the parameter for error message
+     * @throws NullPointerException if writer is null
+     */
+    private static void requireWriter(final Writer writer, final String parameterName) {
+        Objects.requireNonNull(writer, parameterName);
+    }
+
+    /**
+     * Validates that a byte array buffer has appropriate size for operations.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param buffer the buffer to validate
+     * @param minimumSize minimum required size
+     * @throws IllegalArgumentException if buffer is too small
+     * @throws NullPointerException if buffer is null
+     */
+    private static void validateBufferSize(final byte[] buffer, final int minimumSize) {
+        Objects.requireNonNull(buffer, "buffer");
+        if (buffer.length < minimumSize) {
+            throw new IllegalArgumentException("Buffer size (" + buffer.length + ") must be at least " + minimumSize);
+        }
+    }
+
+    //========== END STREAM VALIDATION HELPERS ==========
 
     /**
      * Instances should NOT be constructed in standard programming.

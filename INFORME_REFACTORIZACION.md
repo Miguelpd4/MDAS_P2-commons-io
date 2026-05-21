@@ -1661,43 +1661,67 @@ Location: Click on class name > Right-click > Source Action >
 
 ---
 
-## 🎯 Plan de Acción Week 5
+## 🎯 Plan de Acción Week 5 (ACTUALIZADO)
 
-### FASE 1: Automated Refactoring (30 min)
-- [ ] Aplicar "Add final modifiers" a FileUtils.java
-- [ ] Aplicar "Add final modifiers" a IOUtils.java
-- [ ] Aplicar "Organize Imports" a archivos principales
+### FASE 1: Extract Common Patterns & Constants (40 min)
+**ENFOQUE:** Patrones repetidos en código y constantes mágicas
+
+#### 1A. Extract Common Validation Patterns
+Archivos: FileUtils.java, IOUtils.java
+- [ ] Extraer método `validateFileExists(File file)` 
+- [ ] Extraer método `validateDirectoryExists(File file)`
+- [ ] Extraer método `validateCanRead(File file)`
+- [ ] Aplicar a ~15-20 ubicaciones en FileUtils
+
+#### 1B. Extract String Constants
+- [ ] Extraer messages de error comunes
+- [ ] Extraer "file://" protocol prefix
+- [ ] Consolidar rutas y patterns
+
+#### 1C. Add Missing Constants
+- [ ] CHARACTER_ENCODING_DEFAULTS
+- [ ] BUFFER_SIZE_OPTIMAL
+- [ ] MAX_DIRECTORY_DEPTH
 - [ ] Compilar y verificar: 0 errores
 
-### FASE 2: Enhanced Loops Conversion (30 min)
-- [ ] Analizar loops en FileUtils (líneas 3480, 3557)
-- [ ] Revisar IOUtils.java línea 1468
-- [ ] Decisión: KEEP AS IS (requieren índice)
+### FASE 2: Loop & Stream Optimizations (30 min)
+- [ ] Analizar loops en FileUtils (líneas 3480, 3557) → KEEP AS IS
+- [ ] Revisar IOUtils.java línea 1468 → KEEP AS IS
+- [ ] Identificar candidatos para Stream API
 - [ ] Compilar y verificar: 0 errores
 
-### FASE 3: Extract Methods & Constants (45 min)
-- [ ] Identificar código repetido en ciclos
-- [ ] Extraer métodos comunes
-- [ ] Consolidar patrones de búsqueda
+### FASE 3: Method Simplification (35 min)
+- [ ] Reducir complejidad de métodos grandes
+- [ ] Extraer lambdas de streams repetitivos
+- [ ] Consolidar lógica duplicada
 - [ ] Compilar y verificar: 0 errores
 
-### FASE 4: Code Cleanup & Validation (30 min)
-- [ ] Revisar archivos transformados
-- [ ] Validar que no hay breaking changes
-- [ ] Commit de cambios automáticos
+### FASE 4: Final Modifiers & Code Cleanup (25 min)
+- [ ] Aplicar final a parámetros de métodos públicos (donde apropiado)
+- [ ] Limpiar imports (verificación)
+- [ ] Validar no hay breaking changes
+- [ ] Commit de cambios
 - [ ] Verificación final: 276 files, 0 errors ✅
 
 ---
 
 ## 📈 Mejoras Estimadas Week 5
 
-| Tipo de Refactoring | Cantidad | Impacto |
-|-------------------|----------|---------|
-| Final Modifiers Added | 50-100+ | Code quality, safety |
-| Enhanced For Loops | 0-2 | Readability (kept as is) |
-| Import Organization | 2-3 | Cleanliness |
-| Methods Extracted | 3-5 | DRY principle |
-| Constants Extracted | 5-10 | Magic numbers elimination |
+| Tipo de Refactoring | Cantidad | Impacto | Status |
+|-------------------|----------|---------|--------|
+| Métodos Extraídos (validación) | 8-12 | DRY, Maintainability | PRIORITY 1 |
+| Constantes Extraídas | 15-25 | Magic numbers reduction | PRIORITY 1 |
+| Enhanced For Loops | 0 | N/A (requires index) | DEFER |
+| Final Modifiers (parámetros) | 20-40 | Code safety | PRIORITY 2 |
+| Stream Optimizations | 3-5 | Modern Java style | PRIORITY 2 |
+| **TOTAL ESTIMADO** | **60-120** | **Code quality** | **IN PROGRESS** |
+
+### Estrategia Revisada
+✅ Enfoque práctico en extracciones que tienen impacto inmediato
+✅ Evita el problema de Maven 3.9 requirement
+✅ Mantiene Java 1.8 compatibility
+✅ Ejecutable con javac directo
+✅ Máximo impacto en mantenibilidad del código
 | **Total Improvements** | **~60-120** | **High** |
 
 ---

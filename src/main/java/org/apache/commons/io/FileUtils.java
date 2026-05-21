@@ -1451,9 +1451,7 @@ public class FileUtils {
      */
     public static void deleteOrThrow(final File file) throws IOException {
         Objects.requireNonNull(file, PROTOCOL_FILE);
-        if (!file.exists()) {
-            throw new FileNotFoundException("File/directory does not exist: " + file.getAbsolutePath());
-        }
+        validateFileExists(file);
         if (file.isDirectory()) {
             deleteDirectory(file);
         } else {
@@ -4263,6 +4261,77 @@ public class FileUtils {
     public static void writeStringWithConfig(final File file, final String data, final Charset charset, final boolean append) throws IOException {
         writeStringToFile(file, data, charset, append);
     }
+
+    //========== PRIVATE VALIDATION HELPER METHODS ==========
+
+    /**
+     * Validates that a file exists, throwing FileNotFoundException if it does not.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param file the file to validate
+     * @throws FileNotFoundException if file does not exist
+     * @throws NullPointerException if file is null
+     */
+    private static void validateFileExists(final File file) throws FileNotFoundException {
+        Objects.requireNonNull(file, "file");
+        if (!file.exists()) {
+            throw new FileNotFoundException("File/directory does not exist: " + file.getAbsolutePath());
+        }
+    }
+
+    /**
+     * Validates that a file exists and is a directory, throwing appropriate exceptions if not.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param file the directory to validate
+     * @throws FileNotFoundException if directory does not exist
+     * @throws NotDirectoryException if file exists but is not a directory
+     * @throws NullPointerException if file is null
+     */
+    private static void validateDirectoryExists(final File file) throws IOException {
+        Objects.requireNonNull(file, "file");
+        if (!file.exists()) {
+            throw new FileNotFoundException("Directory does not exist: " + file.getAbsolutePath());
+        }
+        if (!file.isDirectory()) {
+            throw new NotDirectoryException("File is not a directory: " + file.getAbsolutePath());
+        }
+    }
+
+    /**
+     * Validates that a file exists, is a directory, and is readable.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param file the directory to validate
+     * @throws FileNotFoundException if directory does not exist
+     * @throws NotDirectoryException if file exists but is not a directory
+     * @throws IOException if directory is not readable
+     * @throws NullPointerException if file is null
+     */
+    private static void validateDirectoryReadable(final File file) throws IOException {
+        validateDirectoryExists(file);
+        if (!file.canRead()) {
+            throw new IOException("Directory is not readable: " + file.getAbsolutePath());
+        }
+    }
+
+    /**
+     * Validates that a file exists and is readable.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param file the file to validate
+     * @throws FileNotFoundException if file does not exist
+     * @throws IOException if file is not readable
+     * @throws NullPointerException if file is null
+     */
+    private static void validateFileReadable(final File file) throws IOException {
+        validateFileExists(file);
+        if (!file.canRead()) {
+            throw new IOException("File is not readable: " + file.getAbsolutePath());
+        }
+    }
+
+    //========== END VALIDATION HELPERS ==========
 
     /**
      * Instances should NOT be constructed in standard programming.

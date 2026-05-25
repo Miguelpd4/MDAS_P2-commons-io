@@ -364,7 +364,7 @@ public class FileUtils {
      * @throws NullPointerException  if the given {@link File} is {@code null}.
      */
     private static void checkExists(final File file, final boolean strict) throws FileNotFoundException {
-        Objects.requireNonNull(file, PROTOCOL_FILE);
+        requireFile(file, PROTOCOL_FILE);
         if (strict && !file.exists() && !isSymlink(file)) {
             throw new FileNotFoundException(file.toString());
         }
@@ -379,7 +379,7 @@ public class FileUtils {
      * @throws NullPointerException  if the given {@link File} is {@code null}.
      */
     private static void checkFileExists(final File file, final String name) throws FileNotFoundException {
-        Objects.requireNonNull(file, name);
+        requireFile(file, name);
         if (!file.isFile()) {
             if (file.exists()) {
                 throw new IllegalArgumentException("Parameter '" + name + "' is not a file: " + file);
@@ -868,7 +868,7 @@ public class FileUtils {
      * @since 1.2
      */
     public static void copyDirectoryToDirectory(final File sourceDir, final File destinationDir) throws IOException {
-        Objects.requireNonNull(sourceDir, "sourceDir");
+        requireFile(sourceDir, "sourceDir");
         requireDirectoryIfExists(destinationDir, "destinationDir");
         copyDirectory(sourceDir, new File(destinationDir, sourceDir.getName()), true);
     }
@@ -1190,13 +1190,13 @@ public class FileUtils {
      * @since 2.6
      */
     public static void copyToDirectory(final File sourceFile, final File destinationDir) throws IOException {
-        Objects.requireNonNull(sourceFile, "sourceFile");
+        requireFile(sourceFile, "sourceFile");
         if (sourceFile.isFile()) {
             copyFileToDirectory(sourceFile, destinationDir);
         } else if (sourceFile.isDirectory()) {
             copyDirectoryToDirectory(sourceFile, destinationDir);
         } else {
-            throw new FileNotFoundException("The source " + sourceFile + " does not exist");
+            validateFileExists(sourceFile);
         }
     }
 
@@ -1407,7 +1407,7 @@ public class FileUtils {
      * @throws IllegalArgumentException if {@code directory} is not a directory.
      */
     public static void deleteDirectory(final File directory) throws IOException {
-        Objects.requireNonNull(directory, "directory");
+        requireDirectory(directory);
         if (!directory.exists()) {
             return;
         }
@@ -1450,7 +1450,7 @@ public class FileUtils {
      * @since 1.4
      */
     public static void deleteOrThrow(final File file) throws IOException {
-        Objects.requireNonNull(file, PROTOCOL_FILE);
+        requireFile(file, PROTOCOL_FILE);
         validateFileExists(file);
         if (file.isDirectory()) {
             deleteDirectory(file);
@@ -1553,7 +1553,7 @@ public class FileUtils {
      * @since 2.2
      */
     public static boolean directoryContains(final File directory, final File child) throws IOException {
-        requireDirectoryExists(directory, "directory");
+        validateDirectoryExists(directory);
 
         if (child == null || !child.exists()) {
             return false;
@@ -1702,7 +1702,7 @@ public class FileUtils {
      * @since 2.5
      */
     public static void forceMkdirParent(final File file) throws IOException {
-        forceMkdir(getParentFile(Objects.requireNonNull(file, PROTOCOL_FILE)));
+        forceMkdir(getParentFile(requireFile(file, PROTOCOL_FILE)));
     }
 
     /**
@@ -2793,7 +2793,7 @@ public class FileUtils {
                 throw new IOException("Destination '" + destDir + "' is not a directory");
             }
             if (!createDestDir) {
-                throw new FileNotFoundException("Destination directory '" + destDir + "' does not exist [createDestDir=" + false + "]");
+                validateDirectoryExists(destDir);
             }
             mkdirs(destDir);
         }
@@ -4328,6 +4328,60 @@ public class FileUtils {
         validateFileExists(file);
         if (!file.canRead()) {
             throw new IOException("File is not readable: " + file.getAbsolutePath());
+        }
+    }
+
+    /**
+     * Generic validation helper for File parameters, throwing NullPointerException if null.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param file the file to validate
+     * @param parameterName the name of the parameter for error message
+     * @return the validated file
+     * @throws NullPointerException if file is null
+     */
+    private static File requireFile(final File file, final String parameterName) {
+        return Objects.requireNonNull(file, parameterName);
+    }
+
+    /**
+     * Generic validation helper that checks if a file/directory is not null.
+     * Allows null values, suitable for optional file parameters.
+     *
+     * @param file the file to check
+     * @return true if file is not null, false otherwise
+     */
+    private static boolean fileExists(final File file) {
+        return file != null && file.exists();
+    }
+
+    /**
+     * Validates that a file is not null and is a directory, throwing NotDirectoryException if not.
+     * More specific than validateDirectoryExists for use when file is known to exist.
+     *
+     * @param file the file to validate as directory
+     * @throws NotDirectoryException if file is not a directory
+     * @throws NullPointerException if file is null
+     */
+    private static void requireDirectory(final File file) throws IOException {
+        Objects.requireNonNull(file, "file");
+        if (!file.isDirectory()) {
+            throw new NotDirectoryException("File is not a directory: " + file.getAbsolutePath());
+        }
+    }
+
+    /**
+     * Validates that a file is not null and is a regular file (not directory), throwing IllegalArgumentException if not.
+     * Extracted for code reuse across multiple methods.
+     *
+     * @param file the file to validate
+     * @throws IllegalArgumentException if file is not a regular file
+     * @throws NullPointerException if file is null
+     */
+    private static void requireRegularFile(final File file) throws IOException {
+        Objects.requireNonNull(file, "file");
+        if (!file.isFile()) {
+            throw new IllegalArgumentException("Parameter is not a regular file: " + file.getAbsolutePath());
         }
     }
 
